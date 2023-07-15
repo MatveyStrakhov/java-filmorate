@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,9 +20,13 @@ public class UserController {
         HashMap<Integer, User> users = new HashMap<>();
         @PostMapping("/users")
         public User addUser(@Valid @RequestBody User user){
-            if(user.getLogin().contains(" ")||user.getBirthday().isAfter(LocalDate.now())){
-                log.error("Validation failed");
-                throw new ValidationException();
+            if(user.getLogin().contains(" ")){
+                log.warn("Validation failed: login must not contain blanks");
+                throw new ValidationException("Validation failed: login must not contain blanks");
+            }
+            else if(user.getBirthday().isAfter(LocalDate.now())){
+                log.warn("Validation failed: unbirthed people arent allowed");
+                throw new ValidationException("Validation failed: unbirthed people arent allowed");
             }
             else{
             user.setId(getID());
@@ -28,33 +34,39 @@ public class UserController {
                 user.setName(user.getLogin());
             }
             users.put(user.getId(),user);
+            log.info("User added:"+user.toString());
             return user;}
         }
         @GetMapping("/users")
         public Set<Map.Entry<Integer,User>> getUsers(){
-            return users.entrySet();
+        //generateUser();
+        return users.entrySet();
         }
         @PutMapping("/users")
         public User updateUser(@Valid @RequestBody User user){
-            if(user.getLogin().contains(" ")||user.getBirthday().isAfter(LocalDate.now())){
-                log.error("Validation failed");
-                throw new ValidationException();
+            if(user.getLogin().contains(" ")){
+                log.warn("Validation failed: login must not contain blanks");
+                throw new ValidationException("Validation failed: login must not contain blanks");
+            }
+            else if(user.getBirthday().isAfter(LocalDate.now())){
+                log.warn("Validation failed: unbirthed people arent allowed");
+                throw new ValidationException("Validation failed: unbirthed people arent allowed");
+            }
+            else if (!users.containsKey(user.getId())){
+                log.warn("Validation failed: wrong id");
+                throw new ValidationException("Validation failed: wrong id");
             }
             else{
                 if (user.getName().isEmpty()||user.getName().isBlank()){
                     user.setName(user.getLogin());
                 }
                 users.put(user.getId(),user);
+                log.info("User updated:"+user.toString());
                 return user;}
         }
         private int getID() {
             return ID++;
         }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    private void exceptionHandler(){
-        log.error("Validation failed");
-            throw new ValidationException();
-    }
 
     }
 

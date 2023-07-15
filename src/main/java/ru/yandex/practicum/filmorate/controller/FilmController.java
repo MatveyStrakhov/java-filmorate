@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 @Slf4j
@@ -15,25 +16,51 @@ import java.util.*;
 public class FilmController {
     private int ID = 0;
     HashMap<Integer,Film> films = new HashMap<>();
+
+
     @PostMapping("/films")
     public Film addFilm(@Valid @RequestBody Film film){
+        if(film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))){
+            log.warn("Validation failed: release date is too early");
+            throw new ValidationException("Validation failed: release date is too early");
+        }
+        else if(film.getDescription().length()>200){
+            log.warn("Validation failed: description is too long");
+            throw new ValidationException("Validation failed: description is too long");
+        }
+        else if (film.getDuration().isNegative()){
+            log.warn("Validation failed: duration is negative");
+            throw new ValidationException("Validation failed: duration is negative");
+        }
+        else{
         film.setId(getID());
         films.put(film.getId(),film);
         log.info("New film added "+film.toString());
-        return film;
+        return film;}
 
     }
     @GetMapping("/films")
     public Set<Map.Entry<Integer,Film>> getFilms(){
+        //generateFilm();
         return films.entrySet();
     }
     @PutMapping("/films")
     public Film updateFilm(@Valid @RequestBody Film film){
-        if(film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))||
-                film.getDescription().length()>200){
-            log.error("Validation failed");
-            throw new ValidationException();
-
+        if(film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))){
+            log.warn("Validation failed: release date is too early");
+            throw new ValidationException("Validation failed: release date is too early");
+        }
+        else if(film.getDescription().length()>200){
+            log.warn("Validation failed: description is too long");
+            throw new ValidationException("Validation failed: description is too long");
+        }
+        else if (film.getDuration().isNegative()){
+            log.warn("Validation failed: duration is negative");
+            throw new ValidationException("Validation failed: duration is negative");
+        }
+        else if (!films.containsKey(film.getId())){
+            log.warn("Validation failed: wrong id");
+            throw new ValidationException("Validation failed: wrong id");
         }
         else{
             films.put(film.getId(),film);
@@ -43,11 +70,6 @@ public class FilmController {
     }
     private int getID() {
         return ID++;
-    }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    private void exceptionHandler(){
-        log.error("Validation failed");
-        throw new ValidationException();
     }
 
 }
