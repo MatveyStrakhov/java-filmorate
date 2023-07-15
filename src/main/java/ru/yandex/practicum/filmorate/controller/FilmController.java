@@ -71,5 +71,12 @@ public class FilmController {
     private int getID() {
         return ID++;
     }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    void handleException(MethodArgumentNotValidException e){
+        log.warn("Validation failed:" + e.getMessage());
+        throw new ValidationException("Validation failed:" + e.getMessage());
+
+    }
+
 
 }
