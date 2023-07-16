@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -28,7 +27,7 @@ public class UserController {
             throw new ValidationException("Validation failed: unbirthed people arent allowed");
         } else {
             user.setId(getID());
-            if (user.getName().isEmpty() || user.getName().isBlank()) {
+            if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
                 user.setName(user.getLogin());
             }
             users.put(user.getId(), user);
@@ -54,7 +53,7 @@ public class UserController {
             log.warn("Validation failed: wrong id");
             throw new ValidationException("Validation failed: wrong id");
         } else {
-            if (user.getName().isEmpty() || user.getName().isBlank()) {
+            if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
                 user.setName(user.getLogin());
             }
             users.put(user.getId(), user);
@@ -65,12 +64,6 @@ public class UserController {
 
     private int getID() {
         return iD++;
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    void handleException(MethodArgumentNotValidException e) {
-        log.warn("Validation failed:" + e.getMessage());
-        throw new ValidationException("Validation failed:" + e.getMessage());
     }
 
 }
