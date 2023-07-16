@@ -11,64 +11,68 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 @Slf4j
 @RestController
 public class UserController {
-        private int ID = 0;
-        HashMap<Integer, User> users = new HashMap<>();
-        @PostMapping("/users")
-        public User addUser(@Valid @RequestBody User user){
-            if(user.getLogin().contains(" ")){
-                log.warn("Validation failed: login must not contain blanks");
-                throw new ValidationException("Validation failed: login must not contain blanks");
-            }
-            else if(user.getBirthday().isAfter(LocalDate.now())){
-                log.warn("Validation failed: unbirthed people arent allowed");
-                throw new ValidationException("Validation failed: unbirthed people arent allowed");
-            }
-            else{
+    private int iD = 0;
+    HashMap<Integer, User> users = new HashMap<>();
+
+    @PostMapping("/users")
+    public User addUser(@Valid @RequestBody User user) {
+        if (user.getLogin().contains(" ")) {
+            log.warn("Validation failed: login must not contain blanks");
+            throw new ValidationException("Validation failed: login must not contain blanks");
+        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.warn("Validation failed: unbirthed people arent allowed");
+            throw new ValidationException("Validation failed: unbirthed people arent allowed");
+        } else {
             user.setId(getID());
-            if (user.getName().isEmpty()||user.getName().isBlank()){
+            if (user.getName().isEmpty() || user.getName().isBlank()) {
                 user.setName(user.getLogin());
             }
-            users.put(user.getId(),user);
-            log.info("User added:"+user.toString());
-            return user;}
+            users.put(user.getId(), user);
+            log.info("User added:" + user.toString());
+            return user;
         }
-        @GetMapping("/users")
-        public Set<Map.Entry<Integer,User>> getUsers(){
+    }
+
+    @GetMapping("/users")
+    public Set<Map.Entry<Integer, User>> getUsers() {
         //generateUser();
         return users.entrySet();
-        }
-        @PutMapping("/users")
-        public User updateUser(@Valid @RequestBody User user){
-            if(user.getLogin().contains(" ")){
-                log.warn("Validation failed: login must not contain blanks");
-                throw new ValidationException("Validation failed: login must not contain blanks");
-            }
-            else if(user.getBirthday().isAfter(LocalDate.now())){
-                log.warn("Validation failed: unbirthed people arent allowed");
-                throw new ValidationException("Validation failed: unbirthed people arent allowed");
-            }
-            else if (!users.containsKey(user.getId())){
-                log.warn("Validation failed: wrong id");
-                throw new ValidationException("Validation failed: wrong id");
-            }
-            else{
-                if (user.getName().isEmpty()||user.getName().isBlank()){
-                    user.setName(user.getLogin());
-                }
-                users.put(user.getId(),user);
-                log.info("User updated:"+user.toString());
-                return user;}
-        }
-        private int getID() {
-            return ID++;
-        }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    void handleException(MethodArgumentNotValidException e){
-        log.warn("Validation failed:" + e.getMessage());
-        throw new ValidationException("Validation failed:" + e.getMessage());}
-
     }
+
+    @PutMapping("/users")
+    public User updateUser(@Valid @RequestBody User user) {
+        if (user.getLogin().contains(" ")) {
+            log.warn("Validation failed: login must not contain blanks");
+            throw new ValidationException("Validation failed: login must not contain blanks");
+        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.warn("Validation failed: unbirthed people arent allowed");
+            throw new ValidationException("Validation failed: unbirthed people arent allowed");
+        } else if (!users.containsKey(user.getId())) {
+            log.warn("Validation failed: wrong id");
+            throw new ValidationException("Validation failed: wrong id");
+        } else {
+            if (user.getName().isEmpty() || user.getName().isBlank()) {
+                user.setName(user.getLogin());
+            }
+            users.put(user.getId(), user);
+            log.info("User updated:" + user.toString());
+            return user;
+        }
+    }
+
+    private int getID() {
+        return iD++;
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    void handleException(MethodArgumentNotValidException e) {
+        log.warn("Validation failed:" + e.getMessage());
+        throw new ValidationException("Validation failed:" + e.getMessage());
+    }
+
+}
 

@@ -8,8 +8,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 @SpringBootTest
-class  FilmorateApplicationTests {
-	@Test
-	void contextLoads() {
-	}
+class FilmorateApplicationTests {
+    @Test
+    void contextLoads() {
+    }
 }

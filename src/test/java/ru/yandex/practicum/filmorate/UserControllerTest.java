@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTest {
@@ -21,15 +22,18 @@ public class UserControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
+
     @Test
     void shouldReturn200ForGETUsers() throws Exception {
-        mockMvc.perform(get("/users")).andExpect(status().is2xxSuccessful());}
+        mockMvc.perform(get("/users")).andExpect(status().is2xxSuccessful());
+    }
+
     @Test
-    void shouldReturn200AndSameUserWhenPOSTUsers() throws Exception{
+    void shouldReturn200AndSameUserWhenPOSTUsers() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("toddler")
                 .build();
         mockMvc.perform(
@@ -43,12 +47,13 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("somemail@email.com"))
                 .andExpect(jsonPath("$.birthday").value("2021-12-19"));
     }
+
     @Test
     void shouldReturn200AndNameIsLoginWhenPOSTUsersAndNameIsBlank() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("  ")
                 .build();
 
@@ -59,12 +64,13 @@ public class UserControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.name").value("login"));
     }
+
     @Test
     void shouldReturn200AndNameIsLoginWhenPOSTUsersAndNameIsEmpty() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("")
                 .build();
         mockMvc.perform(
@@ -74,12 +80,13 @@ public class UserControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.name").value("login"));
     }
+
     @Test
-    void shouldReturn500LoginIsEmptyForPOSTUsers() throws Exception{
+    void shouldReturn500LoginIsEmptyForPOSTUsers() throws Exception {
         User user1 = User.builder()
                 .login("")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         mockMvc.perform(
@@ -88,12 +95,13 @@ public class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
-    void shouldReturn500LoginContainsBlanksForPOSTUsers() throws Exception{
+    void shouldReturn500LoginContainsBlanksForPOSTUsers() throws Exception {
         User user1 = User.builder()
                 .login("this is blank")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         mockMvc.perform(
@@ -102,12 +110,13 @@ public class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
-    void shouldReturn500EmailIsIncorrectForPOSTUsers() throws Exception{
+    void shouldReturn500EmailIsIncorrectForPOSTUsers() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("@somemailemail.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         mockMvc.perform(
@@ -116,12 +125,13 @@ public class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
-    void shouldReturn500BirthdayIsInFutureForPOSTUsers() throws Exception{
+    void shouldReturn500BirthdayIsInFutureForPOSTUsers() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(3021,12,19))
+                .birthday(LocalDate.of(3021, 12, 19))
                 .name("abc")
                 .build();
         mockMvc.perform(
@@ -130,25 +140,26 @@ public class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
-    void shouldReturn200AndSameUserWhenPUTUsers() throws Exception{
+    void shouldReturn200AndSameUserWhenPUTUsers() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("toddler")
                 .build();
         User user2 = User.builder()
                 .id(0)
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("toddler2")
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user1))
-                                .contentType(MediaType.APPLICATION_JSON));
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user1))
+                        .contentType(MediaType.APPLICATION_JSON));
         mockMvc.perform(
                         put("/users")
                                 .content(objectMapper.writeValueAsString(user2))
@@ -160,25 +171,26 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.email").value("somemail@email.com"))
                 .andExpect(jsonPath("$.birthday").value("2021-12-19"));
     }
+
     @Test
     void shouldReturn200AndNameIsLoginWhenPUTUsersAndNameIsBlank() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("name")
                 .build();
         User user2 = User.builder()
                 .id(0)
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("  ")
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user1))
-                                .contentType(MediaType.APPLICATION_JSON));
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user1))
+                        .contentType(MediaType.APPLICATION_JSON));
         mockMvc.perform(
                         put("/users")
                                 .content(objectMapper.writeValueAsString(user2))
@@ -186,19 +198,20 @@ public class UserControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.name").value("login"));
     }
+
     @Test
     void shouldReturn200AndNameIsLoginWhenPUTUsersAndNameIsEmpty() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("name")
                 .build();
         User user2 = User.builder()
                 .id(0)
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("")
                 .build();
         mockMvc.perform(
@@ -212,100 +225,104 @@ public class UserControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.name").value("login"));
     }
+
     @Test
-    void shouldReturn500LoginIsEmptyForPUTUsers() throws Exception{
+    void shouldReturn500LoginIsEmptyForPUTUsers() throws Exception {
         User user1 = User.builder()
                 .login("abc")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         User user2 = User.builder()
                 .id(0)
                 .login("")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user1))
-                                .contentType(MediaType.APPLICATION_JSON));
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user1))
+                        .contentType(MediaType.APPLICATION_JSON));
         mockMvc.perform(
                         put("/users")
                                 .content(objectMapper.writeValueAsString(user2))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
-    void shouldReturn500LoginContainsBlanksForPUTUsers() throws Exception{
+    void shouldReturn500LoginContainsBlanksForPUTUsers() throws Exception {
         User user1 = User.builder()
                 .login("thisisnotblank")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         User user2 = User.builder()
                 .id(0)
                 .login("this is blank")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user1))
-                                .contentType(MediaType.APPLICATION_JSON));
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user1))
+                        .contentType(MediaType.APPLICATION_JSON));
         mockMvc.perform(
                         post("/users")
                                 .content(objectMapper.writeValueAsString(user2))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
-    void shouldReturn500EmailIsIncorrectForPUTUsers() throws Exception{
+    void shouldReturn500EmailIsIncorrectForPUTUsers() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         User user2 = User.builder()
                 .id(0)
                 .login("login")
                 .email("@somemailemail.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user1))
-                                .contentType(MediaType.APPLICATION_JSON));
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user1))
+                        .contentType(MediaType.APPLICATION_JSON));
         mockMvc.perform(
                         put("/users")
                                 .content(objectMapper.writeValueAsString(user2))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
-    void shouldReturn500BirthdayIsInFutureForPUTUsers() throws Exception{
+    void shouldReturn500BirthdayIsInFutureForPUTUsers() throws Exception {
         User user1 = User.builder()
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(2021,12,19))
+                .birthday(LocalDate.of(2021, 12, 19))
                 .name("abc")
                 .build();
         User user2 = User.builder()
                 .id(0)
                 .login("login")
                 .email("somemail@email.com")
-                .birthday(LocalDate.of(3021,12,19))
+                .birthday(LocalDate.of(3021, 12, 19))
                 .name("abc")
                 .build();
         mockMvc.perform(
-                        post("/users")
-                                .content(objectMapper.writeValueAsString(user1))
-                                .contentType(MediaType.APPLICATION_JSON));
+                post("/users")
+                        .content(objectMapper.writeValueAsString(user1))
+                        .contentType(MediaType.APPLICATION_JSON));
         mockMvc.perform(
                         put("/users")
                                 .content(objectMapper.writeValueAsString(user2))
