@@ -43,7 +43,7 @@ public class FilmControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.description").value("abs"))
-                .andExpect(jsonPath("$.duration").value("PT1H"))
+                .andExpect(jsonPath("$.duration").value("1"))
                 .andExpect(jsonPath("$.releaseDate").value("2021-01-21"));
     }
 
@@ -160,7 +160,7 @@ public class FilmControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.description").value("abse"))
-                .andExpect(jsonPath("$.duration").value("PT1H"))
+                .andExpect(jsonPath("$.duration").value("1"))
                 .andExpect(jsonPath("$.releaseDate").value("2021-01-21"));
     }
 
