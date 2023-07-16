@@ -150,7 +150,7 @@ public class UserControllerTest {
                 .name("toddler")
                 .build();
         User user2 = User.builder()
-                .id(0)
+                .id(1)
                 .login("login")
                 .email("somemail@email.com")
                 .birthday(LocalDate.of(2021, 12, 19))
@@ -181,7 +181,7 @@ public class UserControllerTest {
                 .name("name")
                 .build();
         User user2 = User.builder()
-                .id(0)
+                .id(1)
                 .login("login")
                 .email("somemail@email.com")
                 .birthday(LocalDate.of(2021, 12, 19))
@@ -208,7 +208,7 @@ public class UserControllerTest {
                 .name("name")
                 .build();
         User user2 = User.builder()
-                .id(0)
+                .id(1)
                 .login("login")
                 .email("somemail@email.com")
                 .birthday(LocalDate.of(2021, 12, 19))
@@ -235,7 +235,7 @@ public class UserControllerTest {
                 .name("abc")
                 .build();
         User user2 = User.builder()
-                .id(0)
+                .id(1)
                 .login("")
                 .email("somemail@email.com")
                 .birthday(LocalDate.of(2021, 12, 19))
@@ -261,7 +261,7 @@ public class UserControllerTest {
                 .name("abc")
                 .build();
         User user2 = User.builder()
-                .id(0)
+                .id(1)
                 .login("this is blank")
                 .email("somemail@email.com")
                 .birthday(LocalDate.of(2021, 12, 19))
@@ -287,7 +287,7 @@ public class UserControllerTest {
                 .name("abc")
                 .build();
         User user2 = User.builder()
-                .id(0)
+                .id(1)
                 .login("login")
                 .email("@somemailemail.com")
                 .birthday(LocalDate.of(2021, 12, 19))
@@ -313,7 +313,7 @@ public class UserControllerTest {
                 .name("abc")
                 .build();
         User user2 = User.builder()
-                .id(0)
+                .id(1)
                 .login("login")
                 .email("somemail@email.com")
                 .birthday(LocalDate.of(3021, 12, 19))

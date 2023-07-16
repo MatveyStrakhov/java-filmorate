@@ -14,7 +14,7 @@ import java.util.*;
 
 @RestController
 public class FilmController {
-    private int iD = 0;
+    private int iD = 1;
     HashMap<Integer, Film> films = new HashMap<>();
 
 
@@ -40,7 +40,6 @@ public class FilmController {
 
     @GetMapping("/films")
     public Set<Map.Entry<Integer, Film>> getFilms() {
-        //generateFilm();
         return films.entrySet();
     }
 

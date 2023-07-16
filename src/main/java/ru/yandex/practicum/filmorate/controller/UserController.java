@@ -15,7 +15,7 @@ import java.util.Set;
 @Slf4j
 @RestController
 public class UserController {
-    private int iD = 0;
+    private int iD = 1;
     HashMap<Integer, User> users = new HashMap<>();
 
     @PostMapping("/users")
@@ -39,7 +39,6 @@ public class UserController {
 
     @GetMapping("/users")
     public Set<Map.Entry<Integer, User>> getUsers() {
-        //generateUser();
         return users.entrySet();
     }
 

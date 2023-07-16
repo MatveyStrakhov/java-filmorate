@@ -145,7 +145,7 @@ public class FilmControllerTest {
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         Film film2 = Film.builder()
-                .id(0)
+                .id(1)
                 .name("kobayashi")
                 .description("abse")
                 .duration(Duration.ofHours(1))
@@ -175,7 +175,7 @@ public class FilmControllerTest {
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         Film film2 = Film.builder()
-                .id(0)
+                .id(1)
                 .name("  ")
                 .description("abs")
                 .duration(Duration.ofHours(1))
@@ -203,7 +203,7 @@ public class FilmControllerTest {
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         Film film2 = Film.builder()
-                .id(0)
+                .id(1)
                 .name("random")
                 .description("szxromwvnzqdbaorjpxcxkppssvnzjawgfjqycaoayuuygvispeygxxmjbvqifvas" +
                         "ecdxizdmhwzsnayidimpulhlqamnsdnvngidohmgsquqixonxlkauvsnraahnmtzg" +
@@ -236,7 +236,7 @@ public class FilmControllerTest {
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .build();
         Film film2 = Film.builder()
-                .id(0)
+                .id(1)
                 .name("random")
                 .description("szx")
                 .duration(Duration.ofHours(1))
@@ -265,7 +265,7 @@ public class FilmControllerTest {
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .build();
         Film film2 = Film.builder()
-                .id(0)
+                .id(1)
                 .name("random")
                 .description("szx")
                 .duration(Duration.ofHours(-1))
