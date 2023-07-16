@@ -39,8 +39,8 @@ public class FilmController {
     }
 
     @GetMapping("/films")
-    public Set<Map.Entry<Integer, Film>> getFilms() {
-        return films.entrySet();
+    public Collection<Film> getFilms() {
+        return films.values();
     }
 
     @PutMapping("/films")

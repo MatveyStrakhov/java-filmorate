@@ -8,9 +8,8 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -38,8 +37,8 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public Set<Map.Entry<Integer, User>> getUsers() {
-        return users.entrySet();
+    public Collection<User> getUsers() {
+        return users.values();
     }
 
     @PutMapping("/users")
