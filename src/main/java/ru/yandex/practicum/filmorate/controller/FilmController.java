@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -55,7 +56,7 @@ public class FilmController {
             throw new ValidationException("Validation failed: duration is negative");
         } else if (!films.containsKey(film.getId())) {
             log.warn("Validation failed: wrong id");
-            throw new ValidationException("Validation failed: wrong id");
+            throw new IncorrectIdException("Validation failed: wrong id");
         } else {
             films.put(film.getId(), film);
             log.info("Film updated " + film.toString());

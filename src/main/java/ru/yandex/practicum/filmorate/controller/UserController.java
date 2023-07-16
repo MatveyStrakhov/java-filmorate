@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -51,7 +52,7 @@ public class UserController {
             throw new ValidationException("Validation failed: unbirthed people arent allowed");
         } else if (!users.containsKey(user.getId())) {
             log.warn("Validation failed: wrong id");
-            throw new ValidationException("Validation failed: wrong id");
+            throw new IncorrectIdException("Validation failed: wrong id");
         } else {
             if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
                 user.setName(user.getLogin());
