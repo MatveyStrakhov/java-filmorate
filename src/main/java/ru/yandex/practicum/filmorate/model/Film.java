@@ -5,7 +5,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
@@ -18,5 +17,5 @@ public class Film {
     String description;
     @NotNull(message = "release date mustn't be null")
     LocalDate releaseDate;
-    Duration duration;
+    int duration;
     }

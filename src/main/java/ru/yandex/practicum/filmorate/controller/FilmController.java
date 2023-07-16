@@ -25,7 +25,7 @@ public class FilmController {
         } else if (film.getDescription().length() > 200) {
             log.warn("Validation failed: description is too long");
             throw new ValidationException("Validation failed: description is too long");
-        } else if (film.getDuration().isNegative()) {
+        } else if (film.getDuration() < 0) {
             log.warn("Validation failed: duration is negative");
             throw new ValidationException("Validation failed: duration is negative");
         } else {
@@ -50,7 +50,7 @@ public class FilmController {
         } else if (film.getDescription().length() > 200) {
             log.warn("Validation failed: description is too long");
             throw new ValidationException("Validation failed: description is too long");
-        } else if (film.getDuration().isNegative()) {
+        } else if (film.getDuration() < 0) {
             log.warn("Validation failed: duration is negative");
             throw new ValidationException("Validation failed: duration is negative");
         } else if (!films.containsKey(film.getId())) {

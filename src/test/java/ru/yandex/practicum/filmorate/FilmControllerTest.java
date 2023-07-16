@@ -9,8 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-
-import java.time.Duration;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -35,7 +33,7 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name("kobayashi")
                 .description("abs")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         mockMvc.perform(
@@ -54,7 +52,7 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name(" ")
                 .description("szx")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         mockMvc.perform(
@@ -73,7 +71,7 @@ public class FilmControllerTest {
                         "oeslftgjmabiqziufqcohfzetvnugvoibnvjuxtzylxholziqfbabviomgvhdlmeve" +
                         "qxqernxaqwcyujqxfccqyesaydpkdvxfuvrdoeniivxqamgykwwsgcteauoiylbqladcwajvrsdqs" +
                         "qttcxvyoohbtxowlhsmflnzshlzjgaweizafahddqxmvyvzcafkfrjipdfjdgwfolnydykkpkbwszanmnf")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         mockMvc.perform(
@@ -90,7 +88,7 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name("random")
                 .description("szx")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(1895, 12, 27))
                 .build();
         mockMvc.perform(
@@ -107,7 +105,7 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name("random")
                 .description("szx")
-                .duration(Duration.ofHours(-1))
+                .duration(-1)
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .build();
         mockMvc.perform(
@@ -125,7 +123,7 @@ public class FilmControllerTest {
                 .id(-1)
                 .name("random")
                 .description("szx")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .build();
         mockMvc.perform(
@@ -141,14 +139,14 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name("kobayashi")
                 .description("abs")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         Film film2 = Film.builder()
                 .id(1)
                 .name("kobayashi")
                 .description("abse")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         mockMvc.perform(
@@ -171,14 +169,14 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name("kobayashi")
                 .description("szx")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         Film film2 = Film.builder()
                 .id(1)
                 .name("  ")
                 .description("abs")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         mockMvc.perform(
@@ -199,7 +197,7 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name("random")
                 .description("szx")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         Film film2 = Film.builder()
@@ -210,7 +208,7 @@ public class FilmControllerTest {
                         "oeslftgjmabiqziufqcohfzetvnugvoibnvjuxtzylxholziqfbabviomgvhdlmeve" +
                         "qxqernxaqwcyujqxfccqyesaydpkdvxfuvrdoeniivxqamgykwwsgcteauoiylbqladcwajvrsdqs" +
                         "qttcxvyoohbtxowlhsmflnzshlzjgaweizafahddqxmvyvzcafkfrjipdfjdgwfolnydykkpkbwszanmnf")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
 
@@ -232,14 +230,14 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name("random")
                 .description("szx")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .build();
         Film film2 = Film.builder()
                 .id(1)
                 .name("random")
                 .description("szx")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(1895, 12, 27))
                 .build();
         mockMvc.perform(
@@ -261,14 +259,14 @@ public class FilmControllerTest {
         Film film1 = Film.builder()
                 .name("random")
                 .description("szx")
-                .duration(Duration.ofHours(1))
+                .duration(1)
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .build();
         Film film2 = Film.builder()
                 .id(1)
                 .name("random")
                 .description("szx")
-                .duration(Duration.ofHours(-1))
+                .duration(-1)
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .build();
         mockMvc.perform(
