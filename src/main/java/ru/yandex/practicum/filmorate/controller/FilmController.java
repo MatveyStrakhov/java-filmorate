@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
@@ -41,12 +39,6 @@ public class FilmController {
             log.info("Film updated " + film.toString());
             return film;
         }
-    }
-
-    @ExceptionHandler
-    void handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        log.warn("Validation failed:" + e.getMessage());
-        throw new ValidationException("Validation failed:" + e.getMessage());
     }
 
     private int getID() {

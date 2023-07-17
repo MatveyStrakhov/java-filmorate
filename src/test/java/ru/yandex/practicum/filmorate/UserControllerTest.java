@@ -329,4 +329,19 @@ public class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    void shouldReturn404IdIsIncorrectForPUTUsers() throws Exception {
+        User user1 = User.builder()
+                .id(999)
+                .login("login")
+                .email("somemail@email.com")
+                .birthday(LocalDate.of(2021, 12, 19))
+                .name("abc")
+                .build();
+        mockMvc.perform(
+                        put("/users")
+                                .content(objectMapper.writeValueAsString(user1))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }

@@ -7,9 +7,6 @@ import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 
 public class BirthdayValidator implements ConstraintValidator<BirthdayConstraint, LocalDate> {
-    @Override
-    public void initialize(BirthdayConstraint birthdayConstraint) {
-    }
 
     @Override
     public boolean isValid(LocalDate birthday,

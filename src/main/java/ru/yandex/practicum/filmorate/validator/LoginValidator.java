@@ -7,9 +7,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class LoginValidator implements ConstraintValidator<LoginConstraint, String> {
-    @Override
-    public void initialize(LoginConstraint loginConstraint) {
-    }
 
     @Override
     public boolean isValid(String login,

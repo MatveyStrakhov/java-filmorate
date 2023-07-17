@@ -7,8 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 
@@ -79,8 +77,7 @@ public class FilmControllerTest {
                         post("/films")
                                 .content(objectMapper.writeValueAsString(film1))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> result.getResolvedException().getClass().equals(ValidationException.class));
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -96,8 +93,7 @@ public class FilmControllerTest {
                         post("/films")
                                 .content(objectMapper.writeValueAsString(film1))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> result.getResolvedException().getClass().equals(ValidationException.class));
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -113,8 +109,7 @@ public class FilmControllerTest {
                         post("/films")
                                 .content(objectMapper.writeValueAsString(film1))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> result.getResolvedException().getClass().equals(ValidationException.class));
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -131,8 +126,7 @@ public class FilmControllerTest {
                         put("/films")
                                 .content(objectMapper.writeValueAsString(film1))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is5xxServerError())
-                .andExpect(result -> result.getResolvedException().getClass().equals(IncorrectIdException.class));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -188,8 +182,7 @@ public class FilmControllerTest {
                         put("/films")
                                 .content(objectMapper.writeValueAsString(film2))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> result.getResolvedException().getClass().equals(ValidationException.class));
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -221,8 +214,7 @@ public class FilmControllerTest {
                         put("/films")
                                 .content(objectMapper.writeValueAsString(film2))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> result.getResolvedException().getClass().equals(ValidationException.class));
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -249,8 +241,7 @@ public class FilmControllerTest {
                         put("/films")
                                 .content(objectMapper.writeValueAsString(film2))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> result.getResolvedException().getClass().equals(ValidationException.class));
+                .andExpect(status().isBadRequest());
 
 
     }
@@ -278,9 +269,7 @@ public class FilmControllerTest {
                         put("/films")
                                 .content(objectMapper.writeValueAsString(film2))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> result.getResolvedException().getClass().equals(ValidationException.class));
-
+                .andExpect(status().isBadRequest());
     }
 
 }

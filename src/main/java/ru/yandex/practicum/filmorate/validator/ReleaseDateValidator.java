@@ -7,9 +7,6 @@ import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 
 public class ReleaseDateValidator implements ConstraintValidator<ReleaseDateConstraint, LocalDate> {
-    @Override
-    public void initialize(ReleaseDateConstraint releaseDateConstraint) {
-    }
 
     @Override
     public boolean isValid(LocalDate releaseDate,
