@@ -329,6 +329,7 @@ public class UserControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     void shouldReturn404IdIsIncorrectForPUTUsers() throws Exception {
         User user1 = User.builder()
