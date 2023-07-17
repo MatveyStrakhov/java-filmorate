@@ -32,7 +32,6 @@ public class FilmController {
     @PutMapping("/films")
     public Film updateFilm(@Valid @RequestBody Film film) {
             if (!films.containsKey(film.getId())) {
-            log.warn("Validation failed: wrong id");
             throw new IncorrectIdException("Validation failed: wrong id");
         } else {
             films.put(film.getId(), film);

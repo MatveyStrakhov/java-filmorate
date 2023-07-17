@@ -35,7 +35,6 @@ public class UserController {
     @PutMapping("/users")
     public User updateUser(@Valid @RequestBody User user) {
         if (!users.containsKey(user.getId())) {
-            log.warn("Validation failed: wrong id");
             throw new IncorrectIdException("Validation failed: wrong id");
         } else {
             if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
