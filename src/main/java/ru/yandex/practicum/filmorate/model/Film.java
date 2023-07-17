@@ -2,20 +2,23 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.annotation.ReleaseDateConstraint;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
 @Builder
 public class Film {
-    int id;
+    private int id;
     @NotBlank(message = "name mustn't be blank or null")
-    String name;
+    private String name;
     @NotNull(message = "description mustn't be null")
-    String description;
+    @Size(max = 200,message = "description is too long")
+    private String description;
     @NotNull(message = "release date mustn't be null")
-    LocalDate releaseDate;
-    int duration;
+    @ReleaseDateConstraint
+    private LocalDate releaseDate;
+    @Positive(message = "duration is negative")
+    private int duration;
     }

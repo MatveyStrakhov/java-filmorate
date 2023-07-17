@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.lang.Nullable;
+import ru.yandex.practicum.filmorate.annotation.BirthdayConstraint;
+import ru.yandex.practicum.filmorate.annotation.LoginConstraint;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,13 +14,15 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class User {
-    int id;
+    private int id;
     @Email
-    String email;
+    private String email;
     @NotNull(message = "login mustn't be null")
     @NotBlank(message = "login mustn't be blank")
-    String login;
+    @LoginConstraint
+    private String login;
     @Nullable
-    String name;
-    LocalDate birthday;
+    private String name;
+    @BirthdayConstraint
+    private LocalDate birthday;
 }
