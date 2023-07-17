@@ -14,11 +14,11 @@ public class ExceptionsHandler {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.warn("Validation failed:" + e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = IncorrectIdException.class)
     ResponseEntity<Object> handleIncorrectIdException(IncorrectIdException e) {
-        return new ResponseEntity<>("ID not found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
