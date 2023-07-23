@@ -1,3 +1,4 @@
+HELP.md
 *.class
 *.log
 *.jar
@@ -10,7 +11,7 @@
 hs_err_pid*
 out/
 target/
-!.mvn/wrapper/maven-wrapper.jar
+.mvn/*
 !**/src/main/**/target/
 !**/src/test/**/target/
 
