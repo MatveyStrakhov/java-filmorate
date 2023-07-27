@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
+
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -38,6 +40,16 @@ public class ExceptionsHandler {
     ResponseEntity<Object> handleIncorrectIdException(IncorrectIdException e) throws JsonProcessingException {
         ErrorJson error = ErrorJson.builder()
                 .error("ID not found")
+                .timestamp(LocalDateTime.now())
+                .status(404)
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = IdNotFoundException.class)
+    ResponseEntity<Object> handleIdNotFoundException(IdNotFoundException e) throws JsonProcessingException {
+        ErrorJson error = ErrorJson.builder()
+                .error(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .status(404)
                 .build();

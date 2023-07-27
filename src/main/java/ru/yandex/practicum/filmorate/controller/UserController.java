@@ -1,54 +1,66 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
+import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class UserController {
-    private int iD = 1;
-    private Map<Integer, User> users = new HashMap<>();
+    private final UserStorage userStorage;
+    private final UserService userService;
 
     @PostMapping("/users")
     public User addUser(@Valid @RequestBody User user) {
-        user.setId(getID());
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        users.put(user.getId(), user);
-        log.info("User added:" + user.toString());
-        return user;
+        return userStorage.createUser(user);
     }
 
-    @GetMapping("/users")
-    public Collection<User> getUsers() {
-        return users.values();
+    @GetMapping(value = {"/users", "/users/{id}"})
+    public Object getUsers(@PathVariable(required = false) Integer id) {
+        if (id == null) {
+            return userStorage.returnAllUsers();
+        } else {
+            if (userStorage.getUserById(id) != null) {
+                return userStorage.getUserById(id);
+            } else {
+                throw new IdNotFoundException("This ID doesn't exist!");
+            }
+        }
+
     }
+
 
     @PutMapping("/users")
     public User updateUser(@Valid @RequestBody User user) {
-        if (!users.containsKey(user.getId())) {
-            throw new IncorrectIdException("Validation failed: wrong id");
-        } else {
-            if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-            users.put(user.getId(), user);
-            log.info("User updated:" + user.toString());
-            return user;
-        }
+        return userStorage.updateUser(user);
     }
 
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public void addToFriends(@PathVariable int id, @PathVariable int friendId) {
+        userService.addFriend(id, friendId);
+    }
 
-    private int getID() {
-        return iD++;
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public void removeFromFriends(@PathVariable int id, @PathVariable int friendId) {
+        userService.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public Collection<User> getFriendsOfUser(@PathVariable int id) {
+        return userStorage.getFriendsList(id);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriendsOfTwoUsers(@PathVariable int id, @PathVariable int otherId) {
+        return userService.returnCommonFriends(id, otherId);
     }
 
 
