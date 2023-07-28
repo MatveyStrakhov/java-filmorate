@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.lang.Nullable;
@@ -28,6 +27,5 @@ public class User {
     private String name;
     @BirthdayConstraint
     private LocalDate birthday;
-    @JsonIgnore
     private final Set<Integer> friends = new HashSet<>();
 }

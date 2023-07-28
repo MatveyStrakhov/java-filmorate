@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -14,51 +13,52 @@ import java.util.Collection;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
-    private final UserStorage userStorage;
     private final UserService userService;
 
-    @PostMapping("/users")
+    @PostMapping()
     public User addUser(@Valid @RequestBody User user) {
-        return userStorage.createUser(user);
+        return userService.createUser(user);
     }
 
-    @GetMapping(value = {"/users", "/users/{id}"})
-    public Object getUsers(@PathVariable(required = false) Integer id) {
-        if (id == null) {
-            return userStorage.returnAllUsers();
+    @GetMapping()
+    public Object getAllUsers() {
+        return userService.returnAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public Object getUsers(@PathVariable Integer id) {
+        if (userService.isValidUser(id)) {
+            return userService.getUserById(id);
         } else {
-            if (userStorage.getUserById(id) != null) {
-                return userStorage.getUserById(id);
-            } else {
-                throw new IdNotFoundException("This ID doesn't exist!");
-            }
+            throw new IdNotFoundException("This ID doesn't exist!");
         }
 
     }
 
 
-    @PutMapping("/users")
+    @PutMapping()
     public User updateUser(@Valid @RequestBody User user) {
-        return userStorage.updateUser(user);
+        return userService.updateUser(user);
     }
 
-    @PutMapping("/users/{id}/friends/{friendId}")
+    @PutMapping("/{id}/friends/{friendId}")
     public void addToFriends(@PathVariable int id, @PathVariable int friendId) {
         userService.addFriend(id, friendId);
     }
 
-    @DeleteMapping("/users/{id}/friends/{friendId}")
+    @DeleteMapping("/{id}/friends/{friendId}")
     public void removeFromFriends(@PathVariable int id, @PathVariable int friendId) {
         userService.removeFriend(id, friendId);
     }
 
-    @GetMapping("/users/{id}/friends")
+    @GetMapping("/{id}/friends")
     public Collection<User> getFriendsOfUser(@PathVariable int id) {
-        return userStorage.getFriendsList(id);
+        return userService.getFriendsList(id);
     }
 
-    @GetMapping("/users/{id}/friends/common/{otherId}")
+    @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriendsOfTwoUsers(@PathVariable int id, @PathVariable int otherId) {
         return userService.returnCommonFriends(id, otherId);
     }
