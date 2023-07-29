@@ -59,47 +59,26 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        user.setId(userStorage.getID());
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        userStorage.getUsers().put(user.getId(), user);
-        log.info("User added:" + user.toString());
-        return user;
+        return userStorage.createUser(user);
     }
 
 
     public Collection<User> returnAllUsers() {
-        return userStorage.getUsers().values();
+        return userStorage.returnAllUsers();
     }
 
     public User updateUser(User user) {
-        if (!userStorage.getUsers().containsKey(user.getId())) {
-            throw new IncorrectIdException("Validation failed: wrong id");
-        } else {
-            if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-            userStorage.getUsers().put(user.getId(), user);
-            log.info("User updated:" + user.toString());
-            return user;
-        }
+        return userStorage.updateUser(user);
     }
 
 
     public User getUserById(int userId) {
-        return userStorage.getUsers().getOrDefault(userId, null);
+        return userStorage.getUserById(userId);
     }
 
 
     public Collection<User> getFriendsList(int id) {
-        if (getUserById(id) == null) {
-            throw new IdNotFoundException("This ID doesn't exist!");
-        } else {
-            return getUserById(id).getFriends().stream()
-                    .map(this::getUserById)
-                    .collect(Collectors.toList());
-        }
+        return userStorage.getFriendsList(id);
     }
 }
 

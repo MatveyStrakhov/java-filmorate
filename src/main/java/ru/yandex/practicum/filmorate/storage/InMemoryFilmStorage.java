@@ -13,13 +13,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     private int iD = 1;
     private Map<Integer, Film> films = new HashMap<>();
 
-    @Override
-    public Map<Integer, Film> getFilms() {
-        return films;
-    }
 
-    @Override
-    public int getID() {
+    private int getID() {
         return iD++;
     }
-}
+
