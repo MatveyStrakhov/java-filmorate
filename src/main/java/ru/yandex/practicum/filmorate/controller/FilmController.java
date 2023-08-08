@@ -26,12 +26,12 @@ public class FilmController {
     }
 
     @GetMapping()
-    public Object getAllFilms() {
+    public Collection<Film> getAllFilms() {
         return filmService.returnAllFilms();
     }
 
     @GetMapping("/{id}")
-    public Object getFilms(@PathVariable Integer id) {
+    public Film getFilms(@PathVariable Integer id) {
         if (!filmService.isValidFilm(id)) {
             throw new IdNotFoundException("This ID doesn't exist!");
         } else {

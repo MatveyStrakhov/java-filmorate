@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
-import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,10 +16,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FilmService {
     private final FilmStorage filmStorage;
-
-    public List<Integer> getLikes(Film film) {
-        return new ArrayList<>(film.getLikes());
-    }
 
     public boolean likeFilm(int filmId, int userId) {
         if (isValidFilm(filmId)) {
@@ -51,30 +45,21 @@ public class FilmService {
     }
 
     public Film createFilm(Film film) {
-        film.setId(filmStorage.getID());
-        filmStorage.getFilms().put(film.getId(), film);
-        log.info("New film added " + film.toString());
-        return film;
+        return filmStorage.createFilm(film);
     }
 
 
     public Collection<Film> returnAllFilms() {
-        return filmStorage.getFilms().values();
+        return filmStorage.returnAllFilms();
     }
 
     public Film updateFilm(Film film) {
-        if (!filmStorage.getFilms().containsKey(film.getId())) {
-            throw new IncorrectIdException("Validation failed: wrong id");
-        } else {
-            filmStorage.getFilms().put(film.getId(), film);
-            log.info("Film updated " + film.toString());
-            return film;
-        }
+        return filmStorage.updateFilm(film);
     }
 
 
     public Film getFilmById(int filmId) {
-        return filmStorage.getFilms().getOrDefault(filmId, null);
+        return filmStorage.getFilmById(filmId);
     }
 
 }

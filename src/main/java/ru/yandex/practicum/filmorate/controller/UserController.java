@@ -23,12 +23,12 @@ public class UserController {
     }
 
     @GetMapping()
-    public Object getAllUsers() {
+    public Collection<User> getAllUsers() {
         return userService.returnAllUsers();
     }
 
     @GetMapping("/{id}")
-    public Object getUsers(@PathVariable Integer id) {
+    public User getUsers(@PathVariable Integer id) {
         if (userService.isValidUser(id)) {
             return userService.getUserById(id);
         } else {
