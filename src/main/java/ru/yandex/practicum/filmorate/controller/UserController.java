@@ -1,54 +1,66 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
+import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserController {
-    private int iD = 1;
-    private Map<Integer, User> users = new HashMap<>();
+    private final UserService userService;
 
-    @PostMapping("/users")
+    @PostMapping()
     public User addUser(@Valid @RequestBody User user) {
-        user.setId(getID());
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        users.put(user.getId(), user);
-        log.info("User added:" + user.toString());
-        return user;
+        return userService.createUser(user);
     }
 
-    @GetMapping("/users")
-    public Collection<User> getUsers() {
-        return users.values();
+    @GetMapping()
+    public Collection<User> getAllUsers() {
+        return userService.returnAllUsers();
     }
 
-    @PutMapping("/users")
-    public User updateUser(@Valid @RequestBody User user) {
-        if (!users.containsKey(user.getId())) {
-            throw new IncorrectIdException("Validation failed: wrong id");
+    @GetMapping("/{id}")
+    public User getUsers(@PathVariable Integer id) {
+        if (userService.isValidUser(id)) {
+            return userService.getUserById(id);
         } else {
-            if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-            users.put(user.getId(), user);
-            log.info("User updated:" + user.toString());
-            return user;
+            throw new IdNotFoundException("This ID doesn't exist!");
         }
+
     }
 
 
-    private int getID() {
-        return iD++;
+    @PutMapping()
+    public User updateUser(@Valid @RequestBody User user) {
+        return userService.updateUser(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addToFriends(@PathVariable int id, @PathVariable int friendId) {
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFromFriends(@PathVariable int id, @PathVariable int friendId) {
+        userService.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriendsOfUser(@PathVariable int id) {
+        return userService.getFriendsList(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriendsOfTwoUsers(@PathVariable int id, @PathVariable int otherId) {
+        return userService.returnCommonFriends(id, otherId);
     }
 
 
