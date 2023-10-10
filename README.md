@@ -1,7 +1,7 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-![Untitled (2)](https://github.com/MatveyStrakhov/java-filmorate/assets/126389529/5abfc0f9-fd06-4f36-95c6-13b20f496d8f)
+![Untitled (3)](https://github.com/MatveyStrakhov/java-filmorate/assets/126389529/bbe05dc7-9673-4e23-bace-054d0f42cefd)
 
 Пример запроса всех жанров фильма #1
 
