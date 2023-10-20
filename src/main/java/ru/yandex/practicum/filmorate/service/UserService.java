@@ -19,7 +19,7 @@ public class UserService {
     private final UserStorage userStorage;
 
     public boolean addFriend(int userId1, int userId2) {
-        if (!isValidUser(userId1) || !isValidUser(userId2)) {//(getUserById(userId1) == null || getUserById(userId2) == null) {
+        if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("User with this id does not exist!");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("You cannot add yourself to friends!");
@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public boolean removeFriend(int userId1, int userId2) {
-        if (!isValidUser(userId1) || !isValidUser(userId2)) {//(getUserById(userId1) == null || getUserById(userId2) == null) {
+        if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("User with this id does not exist!");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("You cannot add or remove yourself from friends!");
@@ -41,7 +41,7 @@ public class UserService {
     }
 
     public List<User> returnCommonFriends(int userId1, int userId2) {
-        if (!isValidUser(userId1) || !isValidUser(userId2)) {//(getUserById(userId1) == null || getUserById(userId2) == null) {
+        if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("Incorrect user Id");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("Ids cannot be same!");
