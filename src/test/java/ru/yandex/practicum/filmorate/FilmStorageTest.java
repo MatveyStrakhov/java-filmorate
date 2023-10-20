@@ -106,10 +106,8 @@ public class FilmStorageTest {
     @Order(5)
     void getPopularFilmsAndLikeFilmTest() {
         userStorage.createUser(user);
-        userStorage.createUser(user2);
         filmStorage.createFilm(film2);
         filmStorage.likeFilm(1, 1);
-        filmStorage.likeFilm(1, 2);
         assertThat(filmStorage.getPopularFilms(2)).hasSize(2);
         assertThat(filmStorage.getPopularFilms(2).get(0)).isNotNull()
                 .hasFieldOrPropertyWithValue("description", "absence")
