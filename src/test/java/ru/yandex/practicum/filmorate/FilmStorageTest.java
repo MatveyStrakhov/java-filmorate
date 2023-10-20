@@ -33,12 +33,6 @@ public class FilmStorageTest {
             .birthday(LocalDate.of(2021, 12, 19))
             .name("toddler")
             .build();
-    private final User user2 = User.builder()
-            .login("login2")
-            .email("somemail@email.com")
-            .birthday(LocalDate.of(2021, 12, 19))
-            .name("name")
-            .build();
     private final Film film = Film.builder()
             .name("kobayashi")
             .description("abs")
