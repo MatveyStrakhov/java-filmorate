@@ -109,7 +109,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void likeFilm(Integer filmId, Integer userId) {
-        String sql = "INSERT INTO likes(user_id, film_id) VALUES (?, ?)";
+        String sql = "MERGE INTO likes(user_id, film_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, userId, filmId);
     }
 
