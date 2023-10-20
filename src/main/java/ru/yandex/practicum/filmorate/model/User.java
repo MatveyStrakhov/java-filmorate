@@ -1,15 +1,8 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldNameConstants;
-import org.springframework.boot.context.properties.ConstructorBinding;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.context.annotation.Primary;
-import org.springframework.lang.Nullable;
 import ru.yandex.practicum.filmorate.annotation.BirthdayConstraint;
 import ru.yandex.practicum.filmorate.annotation.LoginConstraint;
 
@@ -20,7 +13,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Data
 @Builder
