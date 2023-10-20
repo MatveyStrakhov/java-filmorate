@@ -19,43 +19,41 @@ public class UserService {
     private final UserStorage userStorage;
 
     public boolean addFriend(int userId1, int userId2) {
-        if (getUserById(userId1) == null || getUserById(userId2) == null) {
-            throw new IncorrectIdException("Incorrect user Id");
+        if (!isValidUser(userId1) || !isValidUser(userId2)) {//(getUserById(userId1) == null || getUserById(userId2) == null) {
+            throw new IdNotFoundException("User with this id does not exist!");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("You cannot add yourself to friends!");
         } else {
-            getUserById(userId1).getFriends().add(userId2);
-            return getUserById(userId2).getFriends().add(userId1);
+            return userStorage.addFriend(userId1, userId2);
         }
     }
 
     public boolean removeFriend(int userId1, int userId2) {
-        if (getUserById(userId1) == null || getUserById(userId2) == null) {
-            throw new IncorrectIdException("Incorrect user Id");
+        if (!isValidUser(userId1) || !isValidUser(userId2)) {//(getUserById(userId1) == null || getUserById(userId2) == null) {
+            throw new IdNotFoundException("User with this id does not exist!");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("You cannot add or remove yourself from friends!");
         } else {
+            return userStorage.removeFriend(userId1, userId2);
 
-            return getUserById(userId2).getFriends().remove(userId1) &&
-                    getUserById(userId1).getFriends().remove(userId2);
+
         }
     }
 
     public List<User> returnCommonFriends(int userId1, int userId2) {
-        if (getUserById(userId1) == null || getUserById(userId2) == null) {
+        if (!isValidUser(userId1) || !isValidUser(userId2)) {//(getUserById(userId1) == null || getUserById(userId2) == null) {
             throw new IdNotFoundException("Incorrect user Id");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("Ids cannot be same!");
         } else {
-            return getUserById(userId1).getFriends().stream()
-                    .filter(id -> getUserById(userId2).getFriends().contains(id))
-                    .map(this::getUserById)
+            return userStorage.getFriendsList(userId1).stream()
+                    .filter(user -> userStorage.getFriendsList(userId2).contains(user))
                     .collect(Collectors.toList());
         }
     }
 
     public boolean isValidUser(int id) {
-        return getUserById(id) != null;
+        return userStorage.isValidUser(id);
     }
 
     public User createUser(User user) {
@@ -68,9 +66,12 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        return userStorage.updateUser(user);
+        if (isValidUser(user.getId())) {
+            return userStorage.updateUser(user);
+        } else {
+            throw new IdNotFoundException("User with this id does not exist!");
+        }
     }
-
 
     public User getUserById(int userId) {
         return userStorage.getUserById(userId);
@@ -79,6 +80,14 @@ public class UserService {
 
     public Collection<User> getFriendsList(int id) {
         return userStorage.getFriendsList(id);
+    }
+
+    public boolean deleteUser(int id) {
+        if (isValidUser(id)) {
+            return userStorage.deleteUser(id);
+        } else {
+            throw new IdNotFoundException("User with this id does not exist!");
+        }
     }
 }
 

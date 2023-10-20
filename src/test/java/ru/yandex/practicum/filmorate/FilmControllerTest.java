@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Rating;
+
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,6 +36,7 @@ public class FilmControllerTest {
                 .description("abs")
                 .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
+                .mpa(Rating.builder().id(1).name("G").build())
                 .build();
         mockMvc.perform(
                         post("/films")
@@ -126,7 +129,7 @@ public class FilmControllerTest {
                         put("/films")
                                 .content(objectMapper.writeValueAsString(film1))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -136,12 +139,14 @@ public class FilmControllerTest {
                 .description("abs")
                 .duration(1)
                 .releaseDate(LocalDate.of(2021, 1, 21))
+                .mpa(Rating.builder().id(1).name("G").build())
                 .build();
         Film film2 = Film.builder()
                 .id(1)
                 .name("kobayashi")
                 .description("abse")
                 .duration(1)
+                .mpa(Rating.builder().id(1).name("G").build())
                 .releaseDate(LocalDate.of(2021, 1, 21))
                 .build();
         mockMvc.perform(

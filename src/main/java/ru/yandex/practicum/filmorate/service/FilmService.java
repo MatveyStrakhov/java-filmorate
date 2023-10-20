@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -9,39 +8,27 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class FilmService {
     private final FilmStorage filmStorage;
 
-    public boolean likeFilm(int filmId, int userId) {
-        if (isValidFilm(filmId)) {
-            return getFilmById(filmId).getLikes().add(userId);
-        } else {
-            throw new IdNotFoundException("This Id doesn't exist!");
-        }
+    public void likeFilm(int filmId, int userId) {
+        filmStorage.likeFilm(filmId, userId);
     }
 
     public boolean isValidFilm(int id) {
-        return getFilmById(id) != null;
+        return filmStorage.isValidFilm(id);
     }
 
-    public boolean unlikeFilm(int filmId, int userId) {
-        if (isValidFilm(filmId)) {
-            return getFilmById(filmId).getLikes().remove(userId);
-        } else {
-            throw new IdNotFoundException("This Id doesn't exist!");
-        }
+    public void unlikeFilm(int filmId, int userId) {
+        filmStorage.unlikeFilm(filmId, userId);
     }
 
 
     public List<Film> getPopularFilms(int count) {
-        return returnAllFilms().stream()
-                .sorted((o1, o2) -> Integer.compare(o2.getLikes().size(), o1.getLikes().size())).limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getPopularFilms(count);
     }
 
     public Film createFilm(Film film) {
@@ -54,7 +41,11 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
-        return filmStorage.updateFilm(film);
+        if (isValidFilm(film.getId())) {
+            return filmStorage.updateFilm(film);
+        } else {
+            throw new IdNotFoundException("This id doesn't exist!");
+        }
     }
 
 
