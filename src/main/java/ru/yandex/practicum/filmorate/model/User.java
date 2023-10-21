@@ -18,8 +18,6 @@ import java.util.Map;
 @Builder
 @EqualsAndHashCode()
 public class User {
-    @Id
-    @GeneratedValue
     private int id;
     @Email
     private String email;

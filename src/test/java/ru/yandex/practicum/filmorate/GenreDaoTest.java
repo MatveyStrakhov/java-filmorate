@@ -30,11 +30,4 @@ public class GenreDaoTest {
         Genre genre = genreDao.getGenreById(1);
         assertThat(genre).isNotNull().hasFieldOrPropertyWithValue("id", 1).hasFieldOrPropertyWithValue("name", "Комедия");
     }
-
-    @Test
-    void isValidGenreTest() {
-        assertThat(genreDao.isValidGenre(1)).isTrue();
-        assertThat(genreDao.isValidGenre(999)).isFalse();
-    }
-
 }

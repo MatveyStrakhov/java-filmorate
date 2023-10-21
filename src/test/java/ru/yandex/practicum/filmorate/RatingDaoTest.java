@@ -30,11 +30,4 @@ public class RatingDaoTest {
         Rating rating = ratingDao.getRatingById(1);
         assertThat(rating).isNotNull().hasFieldOrPropertyWithValue("id", 1).hasFieldOrPropertyWithValue("name", "G");
     }
-
-    @Test
-    void isValidGenreTest() {
-        assertThat(ratingDao.isValidRating(1)).isTrue();
-        assertThat(ratingDao.isValidRating(999)).isFalse();
-    }
-
 }

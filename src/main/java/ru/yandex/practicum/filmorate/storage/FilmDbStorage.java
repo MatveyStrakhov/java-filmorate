@@ -44,7 +44,10 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> returnAllFilms() {
-        String sql = "SELECT * FROM films AS f LEFT JOIN rating AS r ON f.rating_id = r.rating_id LEFT JOIN film_genre AS fg ON f.id=fg.film_id LEFT JOIN genre AS g ON fg.genre_id=g.genre_id ;";
+        String sql = "SELECT * FROM films AS f " +
+                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
+                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id;";
 
         List<Film> films = jdbcTemplate.query(sql, filmsExtractor);
         if (films != null && !films.isEmpty()) {
@@ -56,7 +59,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        String sqlQuery = "UPDATE films SET " + "description = ?, rating_id = ?,duration = ?, name = ?, release_date = ? " + "where id = ?";
+        String sqlQuery = "UPDATE films SET " + "description = ?, rating_id = ?,duration = ?, name = ?, release_date = ? "
+                + "where id = ?";
         log.info("film update started");
         if (film.getGenres() != null && !film.getGenres().isEmpty()) {
             String sqlDelete = "DELETE FROM film_genre WHERE film_id = ?;";
@@ -77,7 +81,12 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(int filmId) {
-        String sqlQuery = "SELECT f.id, f.name, f.description, f.release_date, f.duration," + " f.rating_id, r.rating_name, fg.genre_id, g.genre FROM films AS f LEFT JOIN rating AS r ON f.rating_id = r.rating_id LEFT JOIN film_genre AS fg ON f.id=fg.film_id LEFT JOIN genre AS g ON fg.genre_id=g.genre_id WHERE id = " + filmId + " ;";
+        String sqlQuery = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre " +
+                "FROM films AS f LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
+                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "WHERE id = " + filmId + " ;";
         try {
             List<Film> films = jdbcTemplate.query(sqlQuery, filmsExtractor);
             if (films != null && !films.isEmpty()) {
@@ -89,15 +98,20 @@ public class FilmDbStorage implements FilmStorage {
         } catch (DataAccessException e) {
             log.info("Data ACCESS: Film not found: " + filmId);
             throw new IdNotFoundException("Film not found:" + filmId);
-        } catch (NullPointerException e) {
-            log.info("Film not found: " + filmId);
-            throw new IdNotFoundException("Film not found:" + filmId);
         }
     }
 
     @Override
     public List<Film> getPopularFilms(int count) {
-        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " + "f.rating_id, r.rating_name, fg.genre_id, g.genre, COUNT(l.user_id) as count " + "FROM films AS f " + "LEFT JOIN likes AS l ON f.id = l.film_id " + "LEFT JOIN rating AS r ON f.rating_id = r.rating_id LEFT JOIN film_genre AS fg ON f.id=fg.film_id LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " + "GROUP BY f.id " + "ORDER BY count DESC " + "LIMIT " + count + ";";
+        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre, COUNT(l.user_id) as count " +
+                "FROM films AS f " + "LEFT JOIN likes AS l ON f.id = l.film_id " +
+                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
+                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "GROUP BY f.id " +
+                "ORDER BY count DESC " +
+                "LIMIT " + count + ";";
         List<Film> films = jdbcTemplate.query(sql, filmsExtractor);
         if (films != null && !films.isEmpty()) {
             return films;

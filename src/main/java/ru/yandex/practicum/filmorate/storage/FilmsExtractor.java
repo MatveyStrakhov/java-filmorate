@@ -31,14 +31,18 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
                     .description(rs.getString("description"))
                     .releaseDate(rs.getDate("release_date").toLocalDate())
                     .build();
-            try {
-                Integer genreId = rs.getInt("genre_id");
-                String genreName = rs.getString("genre");
-                log.info("genre found: " + genreName);
-                Genre genre = new Genre(genreId, genreName);
-                if ((genreId == 0) || (genreName == null)) {
-                    throw new SQLException("No genres for this film!");
+            Integer genreId = rs.getInt("genre_id");
+            String genreName = rs.getString("genre");
+            log.info("genre found: " + genreName);
+            Genre genre = new Genre(genreId, genreName);
+            if ((genreId == 0) || (genreName == null)) {
+                if (!films.containsKey(film.getId())) {
+                    films.put(film.getId(), film);
+                    Set<Genre> genresOfFilm = new HashSet<>();
+                    genres.put(film.getId(), genresOfFilm);
                 }
+            } else {
+
                 if (!films.containsKey(film.getId())) {
                     films.put(film.getId(), film);
                     Set<Genre> genresOfFilm = new HashSet<>();
@@ -46,12 +50,6 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
                     genres.put(film.getId(), genresOfFilm);
                 } else {
                     genres.get(film.getId()).add(genre);
-                }
-            } catch (SQLException e) {
-                if (!films.containsKey(film.getId())) {
-                    films.put(film.getId(), film);
-                    Set<Genre> genresOfFilm = new HashSet<>();
-                    genres.put(film.getId(), genresOfFilm);
                 }
             }
 
@@ -63,5 +61,6 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
             data.add(films.get(id));
         }
         return data;
+
     }
 }

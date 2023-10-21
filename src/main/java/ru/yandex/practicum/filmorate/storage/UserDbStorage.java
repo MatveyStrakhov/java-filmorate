@@ -15,7 +15,6 @@ import java.util.List;
 @Component("dbStorage")
 @Primary
 @Slf4j
-
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserMapper userMapper;

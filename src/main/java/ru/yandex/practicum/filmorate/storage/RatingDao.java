@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Rating;
 
 import java.util.List;
@@ -18,11 +19,15 @@ public class RatingDao {
     }
 
     public Rating getRatingById(int ratingId) {
-        String sql = "SELECT * FROM rating WHERE rating_id=" + ratingId;
-        return jdbcTemplate.queryForObject(sql, ratingMapper);
+        if (isValidRating(ratingId)) {
+            String sql = "SELECT * FROM rating WHERE rating_id=" + ratingId;
+            return jdbcTemplate.queryForObject(sql, ratingMapper);
+        } else {
+            throw new IdNotFoundException("Id not found!");
+        }
     }
 
-    public boolean isValidRating(int ratingId) {
+    private boolean isValidRating(int ratingId) {
         return jdbcTemplate.queryForRowSet("SELECT rating_id FROM rating WHERE rating_id=?", ratingId).next();
     }
 }

@@ -15,8 +15,6 @@ import java.util.Set;
 @Data
 @Builder
 public class Film {
-    @Id
-    @GeneratedValue
     private int id;
     @NotBlank(message = "name mustn't be blank or null")
     private String name;
