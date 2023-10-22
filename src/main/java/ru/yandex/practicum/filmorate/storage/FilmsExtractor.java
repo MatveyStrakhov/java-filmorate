@@ -35,23 +35,19 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
             String genreName = rs.getString("genre");
             log.info("genre found: " + genreName);
             Genre genre = new Genre(genreId, genreName);
+            Set<Genre> genresOfFilm = new HashSet<>();
+            films.put(film.getId(), film);
             if ((genreId == 0) || (genreName == null)) {
-                if (!films.containsKey(film.getId())) {
-                    films.put(film.getId(), film);
-                    Set<Genre> genresOfFilm = new HashSet<>();
-                    genres.put(film.getId(), genresOfFilm);
-                }
+                genres.put(film.getId(), genresOfFilm);
             } else {
-
-                if (!films.containsKey(film.getId())) {
-                    films.put(film.getId(), film);
-                    Set<Genre> genresOfFilm = new HashSet<>();
+                if (genres.get(film.getId()) != null && !genres.get(film.getId()).isEmpty()) {
+                    genres.get(film.getId()).add(genre);
+                } else {
                     genresOfFilm.add(genre);
                     genres.put(film.getId(), genresOfFilm);
-                } else {
-                    genres.get(film.getId()).add(genre);
                 }
             }
+
 
         }
 
