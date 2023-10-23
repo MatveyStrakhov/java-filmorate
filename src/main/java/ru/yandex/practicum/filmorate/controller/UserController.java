@@ -1,16 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-
 import javax.validation.Valid;
 import java.util.Collection;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -61,6 +58,11 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriendsOfTwoUsers(@PathVariable int id, @PathVariable int otherId) {
         return userService.returnCommonFriends(id, otherId);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteUser(@PathVariable int id) {
+        return userService.deleteUser(id);
     }
 
 
