@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.annotation.BirthdayConstraint;
 import ru.yandex.practicum.filmorate.annotation.LoginConstraint;
 
-import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

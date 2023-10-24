@@ -1,12 +1,15 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.ReleaseDateConstraint;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +46,7 @@ public class Film {
         values.put("genres", genres);
         return values;
     }
-
+    @JsonIgnore
     public Rating getRating() {
         return mpa;
     }
