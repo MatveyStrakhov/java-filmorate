@@ -46,6 +46,7 @@ public class Film {
         values.put("genres", genres);
         return values;
     }
+
     @JsonIgnore
     public Rating getRating() {
         return mpa;
