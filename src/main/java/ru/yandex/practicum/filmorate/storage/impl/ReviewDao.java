@@ -96,22 +96,22 @@ public class ReviewDao {
     }
 
     public void likeReview(Integer reviewId, Integer userId) {
-        String sql = "MERGE INTO likes_reviews (user_id, reviews_id, like) VALUES (?, ?, ?)";
+        String sql = "MERGE INTO likes_reviews (user_id, reviews_id, is_like) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, userId, reviewId, LIKE);
     }
 
     public void unlikeReview(Integer reviewId, Integer userId) {
-        String sql = "DELETE FROM likes_reviews WHERE user_id = ? AND review_id = ? AND like = ?";
+        String sql = "DELETE FROM likes_reviews WHERE user_id = ? AND review_id = ? AND is_like = ?";
         jdbcTemplate.update(sql, userId, reviewId, LIKE);
     }
 
     public void dislikeReview(Integer reviewId, Integer userId) {
-        String sql = "MERGE INTO likes_reviews (user_id, reviews_id, like) VALUES (?, ?, ?)";
+        String sql = "MERGE INTO likes_reviews (user_id, reviews_id, is_like) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, userId, reviewId, DISLIKE);
     }
 
     public void unDislikeReview(Integer reviewId, Integer userId) {
-        String sql = "DELETE FROM likes_reviews WHERE user_id = ? AND review_id = ? AND like = ?";
+        String sql = "DELETE FROM likes_reviews WHERE user_id = ? AND review_id = ? AND is_like = ?";
         jdbcTemplate.update(sql, userId, reviewId, DISLIKE);
     }
 
