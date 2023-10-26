@@ -9,18 +9,18 @@ import java.util.Map;
 @Data
 @Builder
 public class Director {
-    private Integer director_id;
-    private String director;
+    private Integer directorId;
+    private String directorName;
 
     public Director(Integer director_id, String director) {
-        this.director_id = director_id;
-        this.director = director;
+        this.directorId = director_id;
+        this.directorName = director;
     }
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
-        values.put("director_id", director_id);
-        values.put("director", director);
+        values.put("director_id", directorId);
+        values.put("director", directorName);
         return values;
 
     }

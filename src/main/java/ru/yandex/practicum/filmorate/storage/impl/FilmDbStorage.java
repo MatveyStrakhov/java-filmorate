@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -39,6 +40,10 @@ public class FilmDbStorage implements FilmStorage {
             String sql = "merge into film_genre values(?,?);";
             film.getGenres().forEach((Genre genre) -> jdbcTemplate.update(sql, film.getId(), genre.getId()));
         }
+        if (film.getDirectors() != null) {
+            String sql = "merge into film_director values(?,?);";
+            film.getDirectors().forEach((Director director) -> jdbcTemplate.update(sql, film.getId(), director.getDirectorId()));
+        }
 
 
         return film;
@@ -49,7 +54,9 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT * FROM films AS f " +
                 "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
                 "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
-                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id;";
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "LEFT JOIN film_director AS fd ON f.id=fd.film_id " +
+                "LEFT JOIN directors AS d ON fd.director_id=d.director_id;";
 
         List<Film> films = jdbcTemplate.query(sql, filmsExtractor);
         if (films != null && !films.isEmpty()) {
@@ -64,16 +71,19 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "UPDATE films SET " + "description = ?, rating_id = ?,duration = ?, name = ?, release_date = ? "
                 + "where id = ?";
         log.info("film update started");
+        String sqlForDeleteGenres = "DELETE FROM film_genre WHERE film_id = ?;";
+        int numberOfDeletedGenres = jdbcTemplate.update(sqlForDeleteGenres, film.getId());
+        log.info("Genres deleted: " + numberOfDeletedGenres);
         if (film.getGenres() != null && !film.getGenres().isEmpty()) {
-            String sqlDelete = "DELETE FROM film_genre WHERE film_id = ?;";
-            int numberOfDeleted = jdbcTemplate.update(sqlDelete, film.getId());
-            log.info("Genres deleted:" + numberOfDeleted);
             String sql = "INSERT INTO film_genre VALUES(?,?);";
             film.getGenres().forEach((Genre genre) -> jdbcTemplate.update(sql, film.getId(), genre.getId()));
-        } else {
-            String sql = "DELETE FROM film_genre WHERE film_id = ?;";
-            int numberOfDeleted = jdbcTemplate.update(sql, film.getId());
-            log.info("Genres deleted: " + numberOfDeleted);
+        }
+        String sqlDeleteDirectors = "DELETE FROM film_director WHERE film_id = ?;";
+        int numberOfDeletedDirectors = jdbcTemplate.update(sqlDeleteDirectors, film.getId());
+        log.info("Directors deleted:" + numberOfDeletedDirectors);
+        if (film.getDirectors() != null && !film.getDirectors().isEmpty()) {
+            String sql = "INSERT INTO film_director VALUES(?,?);";
+            film.getDirectors().forEach((Director director) -> jdbcTemplate.update(sql, film.getId(), director.getDirectorId()));
         }
         jdbcTemplate.update(sqlQuery, film.getDescription(), film.getRating().getId(), film.getDuration(), film.getName(), film.getReleaseDate(), film.getId());
 
@@ -84,10 +94,12 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getFilmById(int filmId) {
         String sqlQuery = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
-                "f.rating_id, r.rating_name, fg.genre_id, g.genre " +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre, fd.director_id, d.director " +
                 "FROM films AS f LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
                 "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
                 "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "LEFT JOIN film_director AS fd ON f.id=fd.film_id " +
+                "LEFT JOIN directors AS d ON fd.director_id=d.director_id " +
                 "WHERE id = " + filmId + " ;";
         try {
             List<Film> films = jdbcTemplate.query(sqlQuery, filmsExtractor);
@@ -106,11 +118,14 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getPopularFilms(int count) {
         String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
-                "f.rating_id, r.rating_name, fg.genre_id, g.genre, COUNT(l.user_id) as count " +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre, fd.director_id, d.director, " +
+                "COUNT(l.user_id) as count " +
                 "FROM films AS f " + "LEFT JOIN likes AS l ON f.id = l.film_id " +
                 "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
                 "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
                 "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "LEFT JOIN film_director AS fd ON f.id=fd.film_id " +
+                "LEFT JOIN directors AS d ON fd.director_id=d.director_id " +
                 "GROUP BY f.id " +
                 "ORDER BY count DESC " +
                 "LIMIT " + count + ";";
