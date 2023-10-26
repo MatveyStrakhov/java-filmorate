@@ -47,6 +47,14 @@ public class DirectorDao {
         else throw new IdNotFoundException("Incorrect director id!");
 
     }
+
+    public void deleteDirector(int directorId){
+        if(isValidDirector(directorId)){
+            String sql = "delete from directors where director_id=? UNION ALL delete from film_director WHERE director_id=?;";
+            jdbcTemplate.update(sql,directorId,directorId);
+        }
+        else throw new IdNotFoundException("Director not found!");
+    }
     public boolean isValidDirector(int directorId){
         return jdbcTemplate.queryForRowSet("SELECT director_id FROM director WHERE director_id=?", directorId).next();
 

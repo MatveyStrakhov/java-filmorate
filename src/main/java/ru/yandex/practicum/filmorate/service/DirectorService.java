@@ -24,4 +24,7 @@ public class DirectorService {
     public  Director createDirector(Director director){
         return directorDao.createDirector(director);
     }
+    public void deleteDirector(int directorId){
+        directorDao.deleteDirector(directorId);
+    }
 }

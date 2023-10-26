@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 @Builder
 public class Director {
     private Integer directorId;
+    @NotNull
     private String directorName;
 
     public Director(Integer director_id, String director) {
