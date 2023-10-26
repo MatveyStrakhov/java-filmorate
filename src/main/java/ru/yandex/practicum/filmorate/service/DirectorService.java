@@ -27,4 +27,7 @@ public class DirectorService {
     public void deleteDirector(int directorId){
         directorDao.deleteDirector(directorId);
     }
+    public boolean isValidDirector(int directorId){
+        return directorDao.isValidDirector(directorId);
+    }
 }

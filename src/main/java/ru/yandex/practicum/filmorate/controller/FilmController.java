@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.DirectorService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -18,6 +19,7 @@ import java.util.Collection;
 public class FilmController {
     private final FilmService filmService;
     private final UserService userService;
+    private final DirectorService directorService;
 
 
     @PostMapping()
@@ -66,6 +68,15 @@ public class FilmController {
     public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getPopularFilms(count);
 
+    }
+
+    @GetMapping("/director/{directorId}?sortBy=[year,likes]")
+    public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
+        if (directorService.isValidDirector(directorId)) {
+            return filmService.getFilmsByDirector(directorId, sortBy);
+        } else {
+            throw new IdNotFoundException("Director id not found!");
+        }
     }
 
 
