@@ -104,12 +104,22 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilmById(int id) {
-        String sqlQuery = "delete from FILMS where FILM_ID = ?";
-        try {
-            jdbcTemplate.update(sqlQuery, id);
-        } catch (RuntimeException e) {
-            throw new IdNotFoundException("Фильм не найден");
+    public List<Film> getPopularFilms(int count) {
+        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre, COUNT(l.user_id) as count " +
+                "FROM films AS f " + "LEFT JOIN likes AS l ON f.id = l.film_id " +
+                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
+                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "GROUP BY f.id " +
+                "ORDER BY count DESC " +
+                "LIMIT " + count + ";";
+        List<Film> films = jdbcTemplate.query(sql, filmsExtractor);
+        if (films != null && !films.isEmpty()) {
+            return films;
+        } else {
+            return new ArrayList<>();
+
         }
     }
 
@@ -130,63 +140,5 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.queryForRowSet("SELECT id FROM films WHERE id=?", id).next();
     }
 
-    @Override
-    public List<Film> findPopularFilms(Integer count, Integer year) {
-        String sql = "SELECT f.*, r.rating_name,fg.genre_id, g.genre " +
-                "FROM LIKES AS l " +
-                "RIGHT OUTER JOIN FILMS AS f ON l.FILM_ID = f.ID " +
-                "LEFT OUTER JOIN FILM_GENRE fg on f.ID = FG.FILM_ID " +
-                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
-                "LEFT JOIN genre AS g ON fg.genre_id = g.genre_id " +
-                "WHERE EXTRACT(YEAR FROM f.RELEASE_DATE) = ? " +
-                "GROUP BY f.ID, r.rating_name, fg.genre_id, g.genre " +
-                "ORDER BY COUNT(l.USER_ID) DESC LIMIT ?";
 
-        return jdbcTemplate.query(sql, filmsExtractor, year, count);
-    }
-
-    // поиск популярных фильмов по жанру
-    @Override
-    public List<Film> findPopularFilms(Integer count, Long genreId) {
-        String sql = "SELECT f.*, r.rating_name,fg.genre_id, g.genre " +
-                "FROM LIKES AS l " +
-                "RIGHT OUTER JOIN FILMS AS f ON l.FILM_ID = f.ID " +
-                "LEFT OUTER JOIN FILM_GENRE fg on f.ID = FG.FILM_ID " +
-                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
-                "LEFT JOIN genre AS g ON fg.genre_id = g.genre_id " +
-                "WHERE fg.GENRE_ID = ? " +
-                "GROUP BY f.ID, r.rating_name, fg.genre_id, g.genre " +
-                "ORDER BY COUNT(l.USER_ID) DESC LIMIT ?";
-
-        return jdbcTemplate.query(sql, filmsExtractor, genreId, count);
-    }
-
-    // поиск популярных фильмов по году и жанру
-    @Override
-    public List<Film> findPopularFilms(Integer count, Long genreId, Integer year) {
-        String sql = "SELECT f.*, r.rating_name,fg.genre_id, g.genre " +
-                "FROM LIKES AS l " +
-                "RIGHT OUTER JOIN FILMS AS f ON l.FILM_ID = f.ID " +
-                "LEFT OUTER JOIN FILM_GENRE fg on f.ID = FG.FILM_ID " +
-                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
-                "LEFT JOIN genre AS g ON fg.genre_id = g.genre_id " +
-                "WHERE g.genre_id = ? AND EXTRACT(YEAR FROM f.RELEASE_DATE) = ? " +
-                "GROUP BY f.ID, r.rating_name, fg.genre_id, g.genre " +
-                "ORDER BY COUNT(l.USER_ID) DESC LIMIT ? ";
-        return jdbcTemplate.query(sql, filmsExtractor, genreId, year, count);
-    }
-
-    @Override
-    public List<Film> findPopularFilms(Integer count) {
-        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
-                "f.rating_id, r.rating_name, fg.genre_id, g.genre, COUNT(l.user_id) as count " +
-                "FROM films AS f " + "LEFT JOIN likes AS l ON f.id = l.film_id " +
-                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
-                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
-                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
-                "GROUP BY f.ID, r.rating_name, fg.genre_id, g.genre " +
-                "ORDER BY count DESC " +
-                "LIMIT " + count + ";";
-        return jdbcTemplate.query(sql, filmsExtractor);
-    }
 }

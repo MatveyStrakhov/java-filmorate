@@ -28,6 +28,8 @@ public interface FilmStorage {
     // поиск популярных фильмов по году и жанру
     List<Film> findPopularFilms(Integer count, Long genreId, Integer year);
 
+    List<Film> getFilmsByDirector(int directorId, String sortBy);
+
     void likeFilm(Integer filmId, Integer userId);
 
     void unlikeFilm(Integer filmId, Integer userId);
