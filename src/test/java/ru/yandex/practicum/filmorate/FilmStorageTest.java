@@ -58,7 +58,7 @@ public class FilmStorageTest {
             .description("sinner")
             .duration(1)
             .directors(directors)
-            .releaseDate(LocalDate.of(2020, 1, 21))
+            .releaseDate(LocalDate.of(2018, 1, 21))
             .mpa(Rating.builder().id(1).name("G").build())
             .genres(Set.of(Genre.builder().id(1).build()))
             .build();

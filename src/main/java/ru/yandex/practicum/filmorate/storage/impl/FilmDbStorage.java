@@ -154,7 +154,7 @@ public class FilmDbStorage implements FilmStorage {
         if (sortBy.equals("likes")) {
             sqlQuery = sql + directorId + "GROUP BY f.id ORDER BY count DESC;";
         } else if (sortBy.equals("year")) {
-            sqlQuery = sql + directorId + "GROUP BY f.id ORDER BY f.release_date DESC;";
+            sqlQuery = sql + directorId + "GROUP BY f.id ORDER BY f.release_date ASC;";
         } else {
             sqlQuery = sql + directorId + "GROUP BY f.id ";
         }

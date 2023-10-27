@@ -52,10 +52,9 @@ public class DirectorDao {
     public void deleteDirector(int directorId) {
         if (isValidDirector(directorId)) {
             String sqlForDirectors = "delete from directors where director_id=?";
-            String sql2ForFilmDirector = "delete from film_director WHERE director_id=?";
-
+            String sqlForFilmDirector = "delete from film_director WHERE director_id=?";
+            jdbcTemplate.update(sqlForFilmDirector, directorId);
             jdbcTemplate.update(sqlForDirectors, directorId);
-            jdbcTemplate.update(sql2ForFilmDirector, directorId);
         } else throw new IdNotFoundException("Director not found!");
     }
 
