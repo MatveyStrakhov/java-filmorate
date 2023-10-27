@@ -33,6 +33,7 @@ public class Film {
     @JsonAlias("mpa")
     private Rating mpa;
     private Set<Genre> genres;
+    private Set<Director> directors;
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
@@ -44,6 +45,7 @@ public class Film {
         values.put("mpa", mpa);
         values.put("rating_id", mpa.getId());
         values.put("genres", genres);
+        values.put("director",directors);
         return values;
     }
 
