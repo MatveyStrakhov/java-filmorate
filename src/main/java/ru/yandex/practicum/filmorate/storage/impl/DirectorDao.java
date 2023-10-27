@@ -19,46 +19,47 @@ public class DirectorDao {
         this.directorMapper = directorMapper;
     }
 
-    public Director createDirector(Director director){
+    public Director createDirector(Director director) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("directors")
                 .usingGeneratedKeyColumns("director_id");
         director.setDirectorId(simpleJdbcInsert.executeAndReturnKey(director.toMap()).intValue());
         return director;
     }
-    public Director updateDirector(Director director){
-        if(isValidDirector(director.getDirectorId())){
+
+    public Director updateDirector(Director director) {
+        if (isValidDirector(director.getDirectorId())) {
             String sql = "UPDATE directors SET director=? WHERE director_id=?";
-            jdbcTemplate.update(sql,director.getDirectorName(),director.getDirectorId());
+            jdbcTemplate.update(sql, director.getDirectorName(), director.getDirectorId());
             return director;
-        }
-        else throw new IdNotFoundException("Incorrect director id!");
+        } else throw new IdNotFoundException("Incorrect director id!");
 
     }
-    public List<Director> getAllDirectors(){
+
+    public List<Director> getAllDirectors() {
         return jdbcTemplate.query("SELECT * FROM directors", directorMapper);
 
     }
-    public Director getDirectorById(int directorId){
-        if(isValidDirector(directorId)){
-            String sql = "SELECT * FROM directors WHERE director_id="+directorId;
-            return jdbcTemplate.queryForObject(sql,directorMapper);
-        }
-        else throw new IdNotFoundException("Incorrect director id!");
+
+    public Director getDirectorById(int directorId) {
+        if (isValidDirector(directorId)) {
+            String sql = "SELECT * FROM directors WHERE director_id=" + directorId;
+            return jdbcTemplate.queryForObject(sql, directorMapper);
+        } else throw new IdNotFoundException("Incorrect director id!");
 
     }
 
-    public void deleteDirector(int directorId){
-        if(isValidDirector(directorId)){
+    public void deleteDirector(int directorId) {
+        if (isValidDirector(directorId)) {
             String sqlForDirectors = "delete from directors where director_id=?";
             String sql2ForFilmDirector = "delete from film_director WHERE director_id=?";
 
-            jdbcTemplate.update(sqlForDirectors,directorId);
-            jdbcTemplate.update(sql2ForFilmDirector,directorId);
-        }
-        else throw new IdNotFoundException("Director not found!");
+            jdbcTemplate.update(sqlForDirectors, directorId);
+            jdbcTemplate.update(sql2ForFilmDirector, directorId);
+        } else throw new IdNotFoundException("Director not found!");
     }
-    public boolean isValidDirector(int directorId){
+
+    public boolean isValidDirector(int directorId) {
         return jdbcTemplate.queryForRowSet("SELECT director_id FROM directors WHERE director_id=?", directorId).next();
 
     }

@@ -153,11 +153,10 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery;
         if (sortBy.equals("likes")) {
             sqlQuery = sql + directorId + "GROUP BY f.id ORDER BY count DESC;";
-        }
-        else if (sortBy.equals("year")) {
-            sqlQuery = sql  + directorId +"GROUP BY f.id ORDER BY f.release_date DESC;";
+        } else if (sortBy.equals("year")) {
+            sqlQuery = sql + directorId + "GROUP BY f.id ORDER BY f.release_date DESC;";
         } else {
-            sqlQuery = sql  + directorId + "GROUP BY f.id ";
+            sqlQuery = sql + directorId + "GROUP BY f.id ";
         }
         return jdbcTemplate.query(sqlQuery, filmsExtractor);
 

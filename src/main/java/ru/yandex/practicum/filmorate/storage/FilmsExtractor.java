@@ -40,8 +40,8 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
             Set<Genre> genresOfFilm = new HashSet<>();
             Integer directorId = rs.getInt("director_id");
             String directorName = rs.getString("director");
-            Director director = new Director(directorId,directorName);
-            Set<Director> directorsOfFilm= new HashSet<>();
+            Director director = new Director(directorId, directorName);
+            Set<Director> directorsOfFilm = new HashSet<>();
             films.put(film.getId(), film);
             if ((genreId == 0) || (genreName == null)) {
                 genres.put(film.getId(), genresOfFilm);
@@ -53,10 +53,9 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
                     genres.put(film.getId(), genresOfFilm);
                 }
             }
-            if ((directorId == 0) || (directorName == null)){
+            if ((directorId == 0) || (directorName == null)) {
                 directors.put(film.getId(), directorsOfFilm);
-            }
-            else{
+            } else {
                 if (directors.get(film.getId()) != null && !directors.get(film.getId()).isEmpty()) {
                     directors.get(film.getId()).add(director);
                 } else {
@@ -64,7 +63,6 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
                     directors.put(film.getId(), directorsOfFilm);
                 }
             }
-
 
 
         }

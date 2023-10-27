@@ -20,8 +20,8 @@ public class Director {
     @JsonAlias("name")
     private String directorName;
 
-    public Director(Integer director_id, String director) {
-        this.directorId = director_id;
+    public Director(Integer directorId, String director) {
+        this.directorId = directorId;
         this.directorName = director;
     }
 

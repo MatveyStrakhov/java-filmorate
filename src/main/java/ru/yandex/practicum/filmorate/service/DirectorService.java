@@ -12,22 +12,28 @@ import java.util.List;
 
 public class DirectorService {
     private final DirectorDao directorDao;
-    public Director getDirectorById(int directorId){
+
+    public Director getDirectorById(int directorId) {
         return directorDao.getDirectorById(directorId);
     }
-    public Director updateDirector(Director director){
+
+    public Director updateDirector(Director director) {
         return directorDao.updateDirector(director);
     }
-    public List<Director> getAllDirectors(){
+
+    public List<Director> getAllDirectors() {
         return directorDao.getAllDirectors();
     }
-    public  Director createDirector(Director director){
+
+    public Director createDirector(Director director) {
         return directorDao.createDirector(director);
     }
-    public void deleteDirector(int directorId){
+
+    public void deleteDirector(int directorId) {
         directorDao.deleteDirector(directorId);
     }
-    public boolean isValidDirector(int directorId){
+
+    public boolean isValidDirector(int directorId) {
         return directorDao.isValidDirector(directorId);
     }
 }

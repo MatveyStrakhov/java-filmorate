@@ -30,8 +30,9 @@ public class FilmService {
     public List<Film> getPopularFilms(int count) {
         return filmStorage.getPopularFilms(count);
     }
-    public List<Film> getFilmsByDirector(int directorId, String sortBy){
-        return filmStorage.getFilmsByDirector(directorId,sortBy);
+
+    public List<Film> getFilmsByDirector(int directorId, String sortBy) {
+        return filmStorage.getFilmsByDirector(directorId, sortBy);
     }
 
     public Film createFilm(Film film) {
