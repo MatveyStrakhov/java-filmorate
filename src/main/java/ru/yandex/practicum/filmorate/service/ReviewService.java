@@ -68,7 +68,8 @@ public class ReviewService {
         return reviewDao.getAllReviews();
     }
 
-    public List<Review> getReviewByCount(int count) {
-        return reviewDao.getReviewsByCount(count);
+    public List<Review> getReviewByFilmIdAndByCount(int filmId, int count) {
+        return reviewDao.getReviewsByCount(filmId, count);
     }
+
 }

@@ -120,13 +120,14 @@ public class ReviewDao {
         return jdbcTemplate.queryForRowSet("SELECT review_id FROM reviews WHERE review_id=?", reviewId).next();
     }
 
-    public List<Review> getReviewsByCount(int count) {
-        String sql = "SELECT r.review_id, r.content, r.positive, r.useful, ur.user_id " +
+    public List<Review> getReviewsByCount(int filmId, int count) {
+        String sql = "SELECT r.review_id, r.content, r.positive, r.useful, ur.user_id, ur.film_id " +
                 "FROM reviews AS r " +
                 "LEFT JOIN users_reviews AS ur ON ur.review_id = r.review_id " +
                 "LEFT JOIN films_reviews AS fr ON r.review_id = fr.review_id " +
+                "WHERE ur.film_id = ? " +
                 "LIMIT ?";
-        List<Review> reviews = jdbcTemplate.query(sql, reviewMapper, count);
+        List<Review> reviews = jdbcTemplate.query(sql, reviewMapper,filmId ,count);
         if (reviews != null && !reviews.isEmpty()) {
             return reviews;
         } else {
