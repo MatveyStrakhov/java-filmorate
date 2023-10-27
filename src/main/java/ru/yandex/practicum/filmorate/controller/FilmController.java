@@ -70,7 +70,7 @@ public class FilmController {
 
     }
 
-    @GetMapping("/director/{directorId}?sortBy=[year,likes]")
+    @GetMapping("/director/{directorId}")
     public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
         if (directorService.isValidDirector(directorId)) {
             return filmService.getFilmsByDirector(directorId, sortBy);

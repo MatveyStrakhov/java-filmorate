@@ -149,15 +149,15 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
                 "LEFT JOIN film_director AS fd ON f.id=fd.film_id " +
                 "LEFT JOIN directors AS d ON fd.director_id=d.director_id " +
-                "GROUP BY f.id ";
+                "WHERE d.director_id=";
         String sqlQuery;
         if (sortBy.equals("likes")) {
-            sqlQuery = sql + "ORDER BY count DESC WHERE d.director_id=" + directorId;
+            sqlQuery = sql + directorId + "GROUP BY f.id ORDER BY count DESC;";
         }
         else if (sortBy.equals("year")) {
-            sqlQuery = sql + "ORDER BY f.release_date DESC WHERE d.director_id=" + directorId;
+            sqlQuery = sql  + directorId +"GROUP BY f.id ORDER BY f.release_date DESC;";
         } else {
-            sqlQuery = sql + "WHERE d.director_id=" + directorId;
+            sqlQuery = sql  + directorId + "GROUP BY f.id ";
         }
         return jdbcTemplate.query(sqlQuery, filmsExtractor);
 

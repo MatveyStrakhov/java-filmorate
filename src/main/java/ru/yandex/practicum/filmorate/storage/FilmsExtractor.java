@@ -21,7 +21,7 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
     @Override
     public List<Film> extractData(ResultSet rs) throws SQLException, DataAccessException {
         List<Film> data = new ArrayList<>();
-        Map<Integer, Film> films = new HashMap<>();
+        Map<Integer, Film> films = new LinkedHashMap<>();
         Map<Integer, Set<Genre>> genres = new HashMap<>();
         Map<Integer, Set<Director>> directors = new HashMap<>();
         while (rs.next()) {
