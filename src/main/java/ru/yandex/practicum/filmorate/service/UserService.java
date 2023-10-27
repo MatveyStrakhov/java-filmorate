@@ -77,12 +77,11 @@ public class UserService {
         return userStorage.getUserById(userId);
     }
 
-
     public Collection<User> getFriendsList(int id) {
         return userStorage.getFriendsList(id);
     }
 
-    public boolean deleteUser(int id) {
+    public User deleteUser(int id) {
         if (isValidUser(id)) {
             return userStorage.deleteUser(id);
         } else {

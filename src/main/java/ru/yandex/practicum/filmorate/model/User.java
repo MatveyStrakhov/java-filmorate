@@ -4,11 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.yandex.practicum.filmorate.annotation.BirthdayConstraint;
-import ru.yandex.practicum.filmorate.annotation.LoginConstraint;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +20,8 @@ public class User {
     private int id;
     @Email
     private String email;
-    @NotNull(message = "login mustn't be null")
-    @NotBlank(message = "login mustn't be blank")
-    @LoginConstraint
+    @NotBlank(message = "Логин не может быть пустым!")
+    @Pattern(regexp = "^\\S*$", message = "Логин не может содержать пробелы!")
     private String login;
     private String name;
     @NotNull

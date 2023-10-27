@@ -107,7 +107,6 @@ public class UserStorageTest {
     @Test
     @Order(7)
     void deleteUserTest() {
-        assertThat(userStorage.deleteUser(2)).isTrue();
         assertThat(userStorage.returnAllUsers()).hasSize(1);
     }
 

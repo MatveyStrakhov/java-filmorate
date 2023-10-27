@@ -60,8 +60,8 @@ public class UserController {
         return userService.returnCommonFriends(id, otherId);
     }
 
-    @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable int id) {
+    @DeleteMapping("/{userid}")
+    public User deleteUser(@PathVariable int id) {
         return userService.deleteUser(id);
     }
 

@@ -89,7 +89,6 @@ public class UserDbStorage implements UserStorage {
         }
     }
 
-
     @Override
     public Collection<User> getFriendsList(int userId) {
         String sqlQuery = "SELECT id, email, login, name, birthday " +
@@ -100,9 +99,10 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public boolean deleteUser(int id) {
+    public User deleteUser(int id) {
         String sqlQuery = "delete from users where id = ?";
-        return jdbcTemplate.update(sqlQuery, id) > 0;
+        jdbcTemplate.update(sqlQuery, id);
+        return null;
     }
 
     @Override

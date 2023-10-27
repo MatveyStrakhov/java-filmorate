@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -61,11 +62,28 @@ public class FilmController {
             throw new IdNotFoundException("This ID doesn't exist!");
         }
     }
+    @GetMapping("/popular")
+    public List<Film> findPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count,
+                                       @RequestParam(value = "genreId", required = false) Long genreId,
+                                       @RequestParam(value = "year", required = false) Integer year) {
+        if (genreId == null && year == null) {
+            log.info("Получен запрос GET /films/popular?count={count} — список фильмов по количеству лайков");
+            return filmService.findPopularFilms(count);
+        } else if (genreId == null) {
+            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по годам");
+            return filmService.findPopularFilms(count, year);
+        } else if (year == null) {
+            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по жанрам");
+            return filmService.findPopularFilms(count, genreId);
+        } else {
+            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по годам и жанрам");
+            return filmService.findPopularFilms(count, genreId, year);
+        }
+    }
 
-    @GetMapping(value = {"/popular"})
-    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
-        return filmService.getPopularFilms(count);
-
+    @DeleteMapping("/{id}") //удаление фильма по id
+    public void filmDeleteById(@PathVariable("id") final Integer filmId) {
+        filmService.filmDeleteById(filmId);
     }
 
 
