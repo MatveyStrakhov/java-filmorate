@@ -28,6 +28,7 @@ public class DirectorControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
+
     @Test
     @Order(1)
     void shouldReturn200AndSameDirectorWhenPOSTDirectors() throws Exception {
@@ -43,12 +44,14 @@ public class DirectorControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("New Director"));
     }
+
     @Test
     @Order(2)
     void shouldReturn200ForGETDirectors() throws Exception {
         mockMvc.perform(get("/directors"))
                 .andExpect(status().is2xxSuccessful());
     }
+
     @Test
     @Order(3)
     void shouldReturn200AndNewDirectorForPutDirectors() throws Exception {
@@ -57,13 +60,14 @@ public class DirectorControllerTest {
                 .directorName("Updated Director")
                 .build();
         mockMvc.perform(put("/directors")
-                .content(objectMapper.writeValueAsString(director))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(director))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Updated Director"));
     }
+
     @Test
     @Order(4)
     void shouldReturn200AndNewDirectorForGETDirectorById() throws Exception {
@@ -73,11 +77,14 @@ public class DirectorControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Updated Director"));
     }
+
     @Test
     @Order(5)
     void shouldReturn4xxForGETDirectorByIdWhenIncorrectId() throws Exception {
         mockMvc.perform(get("/directors/2"))
-                .andExpect(status().isNotFound());}
+                .andExpect(status().isNotFound());
+    }
+
     @Test
     @Order(6)
     void shouldReturnBadRequestWhenPOSTDirectorsForDirectorWithoutName() throws Exception {
@@ -89,6 +96,7 @@ public class DirectorControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     @Order(7)
     void shouldCorrectlyDeleteDirector() throws Exception {
@@ -97,6 +105,7 @@ public class DirectorControllerTest {
         mockMvc.perform(get("/directors/1"))
                 .andExpect(status().isNotFound());
     }
+
     @Test
     @Order(8)
     void shouldReturnNotFoundWhenDeleteNonExistentDirector() throws Exception {
