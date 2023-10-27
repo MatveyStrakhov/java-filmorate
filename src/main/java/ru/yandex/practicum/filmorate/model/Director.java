@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class Director {
     @JsonAlias("id")
     @JsonProperty("id")
     private Integer directorId;
-    @NotNull
+    @NotBlank
     @JsonProperty("name")
     @JsonAlias("name")
     private String directorName;
