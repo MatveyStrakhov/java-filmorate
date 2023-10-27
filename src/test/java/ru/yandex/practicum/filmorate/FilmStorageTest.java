@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.storage.impl.DirectorDao;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
