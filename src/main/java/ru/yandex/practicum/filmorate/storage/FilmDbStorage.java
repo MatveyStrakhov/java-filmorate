@@ -124,12 +124,14 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public void likeFilm(Integer filmId, Integer userId) {
         String sql = "MERGE INTO likes(user_id, film_id) VALUES (?, ?)";
+        log.info("пользователь " + userId + " лайкнул фильм " + filmId);
         jdbcTemplate.update(sql, userId, filmId);
     }
 
     @Override
     public void unlikeFilm(Integer filmId, Integer userId) {
         String sql = "DELETE FROM likes WHERE user_id = ? AND film_id = ?";
+        log.info("пользователь " + userId + " дизлайкнул фильм " + filmId);
         jdbcTemplate.update(sql, userId, filmId);
     }
 
@@ -138,5 +140,22 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.queryForRowSet("SELECT id FROM films WHERE id=?", id).next();
     }
 
+    @Override
+    public Collection<Film> getFilmsByUser(Integer userId) {
+        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre, COUNT(l.user_id) as count " +
+                "FROM films AS f " + "LEFT JOIN likes AS l ON f.id = l.film_id " +
+                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
+                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "WHERE f.id IN (SELECT l.film_id FROM likes WHERE user_id = " + userId + ")";
+        Collection<Film> films = jdbcTemplate.query(sql, filmsExtractor);
+        if (films != null && !films.isEmpty()) {
+            log.info("фильмы пользователя " + userId + ": " + films);
+            return films;
+        } else {
+            return new ArrayList<>();
+        }
+    }
 
 }

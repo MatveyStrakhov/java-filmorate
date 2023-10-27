@@ -1,15 +1,17 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
@@ -53,4 +55,14 @@ public class FilmService {
         return filmStorage.getFilmById(filmId);
     }
 
+    public Collection<Film> getFilmsByUser(Integer userId) {
+        return filmStorage.getFilmsByUser(userId);
+    }
+
+    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+        Collection<Film> listOfUserFilms = getFilmsByUser(userId);
+        Collection<Film> listOfFriendFilms = getFilmsByUser(friendId);
+        Set<Film> commonList = listOfUserFilms.stream().filter(listOfFriendFilms::contains).collect(Collectors.toSet());
+        return new ArrayList<>(commonList);
+    }
 }

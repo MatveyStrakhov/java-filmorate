@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface FilmStorage {
     void unlikeFilm(Integer filmId, Integer userId);
 
     boolean isValidFilm(int id);
+
+    Collection<Film> getFilmsByUser(Integer userId);
 }
