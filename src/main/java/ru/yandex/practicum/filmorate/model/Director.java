@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,8 +12,12 @@ import java.util.Map;
 @Data
 @Builder
 public class Director {
+    @JsonAlias("id")
+    @JsonProperty("id")
     private Integer directorId;
     @NotNull
+    @JsonProperty("name")
+    @JsonAlias("name")
     private String directorName;
 
     public Director(Integer director_id, String director) {

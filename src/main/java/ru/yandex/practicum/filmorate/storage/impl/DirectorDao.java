@@ -50,13 +50,16 @@ public class DirectorDao {
 
     public void deleteDirector(int directorId){
         if(isValidDirector(directorId)){
-            String sql = "delete from directors where director_id=? UNION ALL delete from film_director WHERE director_id=?;";
-            jdbcTemplate.update(sql,directorId,directorId);
+            String sqlForDirectors = "delete from directors where director_id=?";
+            String sql2ForFilmDirector = "delete from film_director WHERE director_id=?";
+
+            jdbcTemplate.update(sqlForDirectors,directorId);
+            jdbcTemplate.update(sql2ForFilmDirector,directorId);
         }
         else throw new IdNotFoundException("Director not found!");
     }
     public boolean isValidDirector(int directorId){
-        return jdbcTemplate.queryForRowSet("SELECT director_id FROM director WHERE director_id=?", directorId).next();
+        return jdbcTemplate.queryForRowSet("SELECT director_id FROM directors WHERE director_id=?", directorId).next();
 
     }
 }
