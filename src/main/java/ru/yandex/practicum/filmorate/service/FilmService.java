@@ -31,6 +31,10 @@ public class FilmService {
         return filmStorage.getPopularFilms(count);
     }
 
+    public List<Film> getFilmsByDirector(int directorId, String sortBy) {
+        return filmStorage.getFilmsByDirector(directorId, sortBy);
+    }
+
     public Film createFilm(Film film) {
         return filmStorage.createFilm(film);
     }
