@@ -296,6 +296,7 @@ public class FilmControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     void shouldReturnListOfFilmsByDirectorSortedByYear() throws Exception {
         Director director = Director.builder()
@@ -321,19 +322,19 @@ public class FilmControllerTest {
                 .mpa(Rating.builder().id(1).name("G").build())
                 .build();
         mockMvc.perform(
-                post("/directors")
-                        .content(objectMapper.writeValueAsString(director))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        post("/directors")
+                                .content(objectMapper.writeValueAsString(director))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
         mockMvc.perform(
-                post("/films")
-                        .content(objectMapper.writeValueAsString(film1))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        post("/films")
+                                .content(objectMapper.writeValueAsString(film1))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
         mockMvc.perform(
-                post("/films")
-                        .content(objectMapper.writeValueAsString(film2))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        post("/films")
+                                .content(objectMapper.writeValueAsString(film2))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
         mockMvc.perform(get("/films/director/1?sortBy=year"))
                 .andExpect(status().is2xxSuccessful());

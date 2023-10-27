@@ -27,7 +27,7 @@ public class FilmStorageTest {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final DirectorDao directorDao;
-    private final Director director = new Director(1,"director");
+    private final Director director = new Director(1, "director");
     private final Set<Director> directors = Collections.singleton(director);
     private final User user = User.builder()
             .login("login")
@@ -73,7 +73,7 @@ public class FilmStorageTest {
                 .hasFieldOrPropertyWithValue("name", "kobayashi")
                 .hasFieldOrPropertyWithValue("id", 1)
                 .hasFieldOrPropertyWithValue("description", "abs")
-                .hasFieldOrPropertyWithValue("directors",directors);
+                .hasFieldOrPropertyWithValue("directors", directors);
     }
 
     @Order(2)
@@ -121,22 +121,24 @@ public class FilmStorageTest {
         assertThat(filmStorage.isValidFilm(1)).isTrue();
         assertThat(filmStorage.isValidFilm(999)).isFalse();
     }
+
     @Test
     @Order(7)
     void getFilmsByDirectorSortedByLikes() {
-        assertThat(filmStorage.getFilmsByDirector(1,"likes"))
+        assertThat(filmStorage.getFilmsByDirector(1, "likes"))
                 .hasSize(2);
-        assertThat(filmStorage.getFilmsByDirector(1,"likes").get(0))
+        assertThat(filmStorage.getFilmsByDirector(1, "likes").get(0))
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("description", "absence")
                 .hasFieldOrPropertyWithValue("id", 1);
     }
+
     @Test
     @Order(8)
     void getFilmsByDirectorSortedByYear() {
-        assertThat(filmStorage.getFilmsByDirector(1,"year"))
+        assertThat(filmStorage.getFilmsByDirector(1, "year"))
                 .hasSize(2);
-        assertThat(filmStorage.getFilmsByDirector(1,"year").get(0))
+        assertThat(filmStorage.getFilmsByDirector(1, "year").get(0))
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("description", "sinner")
                 .hasFieldOrPropertyWithValue("id", 2);

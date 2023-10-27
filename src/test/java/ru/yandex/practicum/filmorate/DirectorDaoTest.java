@@ -60,6 +60,7 @@ public class DirectorDaoTest {
                 .hasFieldOrPropertyWithValue("directorId", 1)
                 .hasFieldOrPropertyWithValue("directorName", "Updated Director");
     }
+
     @Test
     @Order(4)
     void getDirectorByIdTest() {
@@ -69,21 +70,24 @@ public class DirectorDaoTest {
                 .hasFieldOrPropertyWithValue("directorId", 1)
                 .hasFieldOrPropertyWithValue("directorName", "Updated Director");
     }
+
     @Test
     @Order(5)
     void deleteDirectorTest() {
         directorDao.deleteDirector(1);
         assertThat(directorDao.isValidDirector(1)).isFalse();
     }
+
     @Test
     @Order(6)
     void getDirectorByIdFailTest() {
-        assertThrows(IdNotFoundException.class,()-> directorDao.getDirectorById(1));
+        assertThrows(IdNotFoundException.class, () -> directorDao.getDirectorById(1));
     }
+
     @Test
     @Order(7)
     void deleteDirectorFailTest() {
-        assertThrows(IdNotFoundException.class,()-> directorDao.deleteDirector(1));
+        assertThrows(IdNotFoundException.class, () -> directorDao.deleteDirector(1));
     }
 
 }
