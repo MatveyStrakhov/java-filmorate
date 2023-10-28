@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -65,6 +66,24 @@ public class FilmController {
         }
     }
 
+    @GetMapping("/director/{directorId}")
+    public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
+        if (directorService.isValidDirector(directorId)) {
+            return filmService.getFilmsByDirector(directorId, sortBy);
+        } else {
+            throw new IdNotFoundException("Director id not found!");
+        }
+    }
+
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query, @RequestParam String by) {
+        if (!query.isBlank()) {
+            return filmService.searchFilms(query, by);
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
     @GetMapping("/popular")
     public List<Film> findPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count,
                                        @RequestParam(value = "genreId", required = false) Long genreId,
@@ -81,15 +100,6 @@ public class FilmController {
         } else {
             log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по годам и жанрам");
             return filmService.findPopularFilms(count, genreId, year);
-        }
-    }
-
-    @GetMapping("/director/{directorId}")
-    public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
-        if (directorService.isValidDirector(directorId)) {
-            return filmService.getFilmsByDirector(directorId, sortBy);
-        } else {
-            throw new IdNotFoundException("Director id not found!");
         }
     }
 

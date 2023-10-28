@@ -23,6 +23,8 @@ public interface FilmStorage {
 
     boolean isValidFilm(int id);
 
+    List<Film> searchFilms(String query, String by);
+
     List<Film> findPopularFilms(Integer count);
 
     // поиск популярных фильмов по году

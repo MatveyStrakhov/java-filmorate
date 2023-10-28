@@ -48,9 +48,12 @@ public class FilmService {
         }
     }
 
-
     public Film getFilmById(int filmId) {
         return filmStorage.getFilmById(filmId);
+    }
+
+    public List<Film> searchFilms(String query, String by) {
+        return filmStorage.searchFilms(query, by);
     }
 
     //возвращает список первых фильмов по количеству лайков.
