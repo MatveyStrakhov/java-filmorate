@@ -10,7 +10,9 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -79,5 +81,13 @@ public class FilmController {
         }
     }
 
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query, @RequestParam String by) {
+        if (!query.isBlank()) {
+            return filmService.searchFilms(query, by);
+        } else {
+            return new ArrayList<>();
+        }
+    }
 
 }
