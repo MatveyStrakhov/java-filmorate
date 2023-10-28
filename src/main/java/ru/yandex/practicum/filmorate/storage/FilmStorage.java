@@ -24,4 +24,7 @@ public interface FilmStorage {
     void unlikeFilm(Integer filmId, Integer userId);
 
     boolean isValidFilm(int id);
+
+    List<Film> searchFilms(String query, String by);
+
 }

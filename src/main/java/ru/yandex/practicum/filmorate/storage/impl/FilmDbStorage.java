@@ -179,5 +179,33 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.queryForRowSet("SELECT id FROM films WHERE id=?", id).next();
     }
 
-
+    @Override
+    public List<Film> searchFilms(String query, String by) {
+        String queryLower = query.toLowerCase();
+        String sqlBegin = "SELECT f.id, f.name, f.description, f.release_date, f.duration,\n" +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre, fd.director_id, d.director, COUNT(l.USER_ID) AS count \n" +
+                "FROM films AS f LEFT JOIN rating AS r ON f.rating_id = r.rating_id\n" +
+                "LEFT JOIN likes AS l ON f.id = l.film_id\n" +
+                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id\n" +
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id\n" +
+                "LEFT JOIN film_director AS fd ON f.id=fd.film_id\n" +
+                "LEFT JOIN directors AS d ON fd.director_id=d.director_id\n";
+        String sqlEnd = "GROUP BY F.ID\n" + "ORDER BY COUNT DESC;";
+        String sqlByTitle = sqlBegin + "WHERE LOWER(f.NAME) LIKE '%" + queryLower + "%'\n" + sqlEnd;
+        String sqlByDirector = sqlBegin + "WHERE LOWER(d.DIRECTOR) LIKE '%" + queryLower + "%'\n" + sqlEnd;
+        String sqlByTitleAndDirector = sqlBegin +
+                "WHERE LOWER(d.DIRECTOR) LIKE '%" + queryLower + "%'\n" +
+                "OR LOWER(f.NAME) LIKE '%" + queryLower + "%'\n" + sqlEnd;
+        switch (by) {
+            case "title":
+                return jdbcTemplate.query(sqlByTitle, filmsExtractor);
+            case "director":
+                return jdbcTemplate.query(sqlByDirector, filmsExtractor);
+            case "director,title":
+            case "title,director":
+                return jdbcTemplate.query(sqlByTitleAndDirector, filmsExtractor);
+            default:
+                return new ArrayList<>();
+        }
+    }
 }
