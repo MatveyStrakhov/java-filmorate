@@ -60,7 +60,7 @@ public class FilmStorageTest {
             .directors(directors)
             .releaseDate(LocalDate.of(2018, 1, 21))
             .mpa(Rating.builder().id(1).name("G").build())
-            .genres(Set.of(Genre.builder().id(1).build()))
+            .genres(Set.of(Genre.builder().id(1).build(), Genre.builder().id(2).build()))
             .build();
 
     @Test
