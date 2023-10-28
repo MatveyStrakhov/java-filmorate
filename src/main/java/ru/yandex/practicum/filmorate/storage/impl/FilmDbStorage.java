@@ -38,11 +38,11 @@ public class FilmDbStorage implements FilmStorage {
 
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).intValue());
         if (film.getGenres() != null) {
-            String sql = "merge into film_genre values(?,?);";
+            String sql = "MERGE INTO film_genre VALUES(?,?);";
             film.getGenres().forEach((Genre genre) -> jdbcTemplate.update(sql, film.getId(), genre.getId()));
         }
         if (film.getDirectors() != null) {
-            String sql = "merge into film_director values(?,?);";
+            String sql = "MERGE INTO film_director VALUES(?,?);";
             film.getDirectors().forEach((Director director) -> jdbcTemplate.update(sql, film.getId(), director.getDirectorId()));
         }
 
@@ -70,7 +70,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) {
         String sqlQuery = "UPDATE films SET " + "description = ?, rating_id = ?,duration = ?, name = ?, release_date = ? "
-                + "where id = ?";
+                + "WHERE id = ?";
         log.info("film update started");
         String sqlForDeleteGenres = "DELETE FROM film_genre WHERE film_id = ?;";
         int numberOfDeletedGenres = jdbcTemplate.update(sqlForDeleteGenres, film.getId());
@@ -130,11 +130,11 @@ public class FilmDbStorage implements FilmStorage {
                 "WHERE d.director_id=";
         String sqlQuery;
         if (sortBy.equals("likes")) {
-            sqlQuery = sql + directorId + "GROUP BY f.id ORDER BY count DESC;";
+            sqlQuery = sql + directorId + "GROUP BY f.id, fg.genre_id ORDER BY count DESC;";
         } else if (sortBy.equals("year")) {
-            sqlQuery = sql + directorId + "GROUP BY f.id ORDER BY f.release_date ASC;";
+            sqlQuery = sql + directorId + "GROUP BY f.id, fg.genre_id ORDER BY f.release_date ASC;";
         } else {
-            sqlQuery = sql + directorId + "GROUP BY f.id ";
+            sqlQuery = sql + directorId + "GROUP BY f.id, fg.genre_id ";
         }
         return jdbcTemplate.query(sqlQuery, filmsExtractor);
 
@@ -156,7 +156,6 @@ public class FilmDbStorage implements FilmStorage {
     public boolean isValidFilm(int id) {
         return jdbcTemplate.queryForRowSet("SELECT id FROM films WHERE id=?", id).next();
     }
-
 
     @Override
     public List<Film> findPopularFilms(Integer count, Integer year) {

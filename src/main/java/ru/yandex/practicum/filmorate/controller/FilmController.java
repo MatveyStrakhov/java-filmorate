@@ -64,6 +64,7 @@ public class FilmController {
             throw new IdNotFoundException("This ID doesn't exist!");
         }
     }
+
     @GetMapping("/popular")
     public List<Film> findPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count,
                                        @RequestParam(value = "genreId", required = false) Long genreId,
@@ -83,11 +84,6 @@ public class FilmController {
         }
     }
 
-    @DeleteMapping("/{id}") //удаление фильма по id
-    public void filmDeleteById(@PathVariable("id") final Integer filmId) {
-        //filmService.filmDeleteById(filmId);
-    }
-
     @GetMapping("/director/{directorId}")
     public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
         if (directorService.isValidDirector(directorId)) {
@@ -96,6 +92,5 @@ public class FilmController {
             throw new IdNotFoundException("Director id not found!");
         }
     }
-
 
 }
