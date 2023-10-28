@@ -40,7 +40,7 @@ public class Review {
         Map<String, Object> values = new HashMap<>();
         values.put("reviewId", reviewId);
         values.put("content", content);
-        values.put("isPositive", isPositive);
+        values.put("isPositive", getIsPositive());
         values.put("userId", userId);
         values.put("filmId", filmId);
         values.put("useful", useful);
