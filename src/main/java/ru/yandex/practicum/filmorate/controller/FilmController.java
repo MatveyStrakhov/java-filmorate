@@ -85,7 +85,7 @@ public class FilmController {
 
     @DeleteMapping("/{id}") //удаление фильма по id
     public void filmDeleteById(@PathVariable("id") final Integer filmId) {
-        filmService.filmDeleteById(filmId);
+        //filmService.filmDeleteById(filmId);
     }
 
     @GetMapping("/director/{directorId}")
