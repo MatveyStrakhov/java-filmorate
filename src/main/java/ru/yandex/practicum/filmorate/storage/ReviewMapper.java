@@ -14,10 +14,9 @@ public class ReviewMapper implements RowMapper<Review> {
         return Review.builder()
                 .reviewId(rs.getInt("review_id"))
                 .content(rs.getString("content"))
-                .isPositive(rs.getBoolean("positive"))
+                .isPositive(rs.getBoolean("is_positive"))
                 .userId(rs.getInt("user_id"))
                 .filmId(rs.getInt("film_id"))
-                .useful(rs.getInt("userful"))
                 .build();
     }
 }

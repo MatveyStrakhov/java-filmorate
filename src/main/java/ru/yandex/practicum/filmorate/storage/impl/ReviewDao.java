@@ -22,55 +22,46 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ReviewDao {
-
     private final JdbcTemplate jdbcTemplate;
-    private final UserMapper userMapper;
-    private final FilmsExtractor filmsExtractor;
     private final ReviewMapper reviewMapper;
-
     private static final boolean LIKE = true;
     private static final boolean DISLIKE = false;
 
-
-// добавление нового отзыва
     public Review createReview(Review review) {
+        String sqlQueryInsertFilmsReviewsTable = "INSERT INTO films_reviews(film_id, review_id) VALUES (?, ?);";
+        String sqlQueryInsertUsersReviewsTable = "INSERT INTO users_reviews(user_id, review_id) VALUES (?, ?);";
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("reviews")
                 .usingGeneratedKeyColumns("review_id");
         review.setReviewId(simpleJdbcInsert.executeAndReturnKey(review.toMap()).intValue());
+        jdbcTemplate.update(sqlQueryInsertFilmsReviewsTable, review.getFilmId(), review.getReviewId());
+        jdbcTemplate.update(sqlQueryInsertUsersReviewsTable, review.getUserId(), review.getReviewId());
         return review;
     }
 
-    // обновить отзыв
     public Review updateReview(Review review) {
-        String sqlQueryUpdateReviewsTable = "UPDATE reviews SET content = ?, positive = ?, userful = ? "
+        String sqlQueryUpdateReviewsTable = "UPDATE reviews SET content = ?, is_positive = ?, useful = ? "
                 + "WHERE review_id = ?";
         String sqlQueryUpdateFilmsReviewsTable = "UPDATE films_reviews SET film_id = ? "
                 + "WHERE review_id = ?";
         String sqlQueryUpdateUsersReviewsTable = "UPDATE users_reviews SET user_id = ? "
                 + "WHERE review_id = ?";
         log.info("review update started");
-        jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getContent(), review.isPositive(), review.getUseful());
-        jdbcTemplate.update(sqlQueryUpdateFilmsReviewsTable, review.getFilmId());
-        jdbcTemplate.update(sqlQueryUpdateUsersReviewsTable, review.getUserId());
+        jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getContent(), review.getIsPositive(), review.getUseful(),
+                review.getReviewId());
+        jdbcTemplate.update(sqlQueryUpdateFilmsReviewsTable, review.getFilmId(), review.getReviewId());
+        jdbcTemplate.update(sqlQueryUpdateUsersReviewsTable, review.getUserId(), review.getReviewId());
         return getReviewById(review.getReviewId());
     }
 
-    //получить отзыв по идентификатору
     public Review getReviewById(int reviewId) {
-        if (isValidReview(reviewId)) {
-            String sqlQuery = "SELECT r.review_id, r.content, r.positive, r.useful, ur.user_id " +
+        String sqlQuery = "SELECT r.review_id, r.content, r.is_positive, r.useful, ur.user_id, fr.film_id " +
                     "FROM reviews AS r " +
                     "LEFT JOIN users_reviews AS ur ON ur.review_id = r.review_id " +
                     "LEFT JOIN films_reviews AS fr ON r.review_id = fr.review_id " +
                     "WHERE r.review_id = ?";
-
-            return jdbcTemplate.queryForObject(sqlQuery, reviewMapper, reviewId);
-        } else {
-            throw new IdNotFoundException("Id not found!");
-        }
+        return jdbcTemplate.queryForObject(sqlQuery, reviewMapper, reviewId);
     }
 
-    // удалить отзыв по идентификатору
     public boolean deleteReviewById(int reviewId) {
         if (isValidReview(reviewId)) {
             String sqlQueryOnDeleteReviewInReviewsTable = "DELETE FROM reviews WHERE review_id = ?";
@@ -87,13 +78,13 @@ public class ReviewDao {
         }
     }
 
-    // получить все отзывы
-    public List<Review> getAllReviews() {
-        String sqlQuery = "SELECT r.review_id, r.content, r.positive, r.useful, ur.user_id " +
+    public List<Review> getAllReviews(int count) {
+        String sqlQuery = "SELECT r.review_id, r.content, r.is_positive, r.useful, ur.user_id, fr.film_id " +
                 "FROM reviews AS r " +
                 "LEFT JOIN users_reviews AS ur ON ur.review_id = r.review_id " +
-                "LEFT JOIN films_reviews AS fr ON r.review_id = fr.review_id";
-        return jdbcTemplate.query(sqlQuery, reviewMapper);
+                "LEFT JOIN films_reviews AS fr ON r.review_id = fr.review_id " +
+                "LIMIT ?";
+        return jdbcTemplate.query(sqlQuery, reviewMapper, count);
     }
 
     public void likeReview(Integer reviewId, Integer userId) {
@@ -121,11 +112,11 @@ public class ReviewDao {
     }
 
     public List<Review> getReviewsByCount(int filmId, int count) {
-        String sql = "SELECT r.review_id, r.content, r.positive, r.useful, ur.user_id, ur.film_id " +
+        String sql = "SELECT r.review_id, r.content, r.is_positive, r.useful, ur.user_id, fr.film_id " +
                 "FROM reviews AS r " +
                 "LEFT JOIN users_reviews AS ur ON ur.review_id = r.review_id " +
                 "LEFT JOIN films_reviews AS fr ON r.review_id = fr.review_id " +
-                "WHERE ur.film_id = ? " +
+                "WHERE fr.film_id = ? " +
                 "LIMIT ?";
         List<Review> reviews = jdbcTemplate.query(sql, reviewMapper,filmId ,count);
         if (reviews != null && !reviews.isEmpty()) {
@@ -133,6 +124,20 @@ public class ReviewDao {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public void upUseful(int reviewId) {
+        String sql = "UPDATE reviews SET userful = userful + 1 "
+                + "WHERE review_id = ?";
+        log.debug("upUserful update started");
+        jdbcTemplate.update(sql, reviewId);
+    }
+
+    public void downUseful(int reviewId) {
+        String sql = "UPDATE reviews SET userful = userful - 1 "
+                + "WHERE review_id = ?";
+        log.debug("downUserful update started");
+        jdbcTemplate.update(sql, reviewId);
     }
 
 }

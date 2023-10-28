@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.ReviewService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @Slf4j
@@ -19,7 +21,11 @@ public class ReviewController {
     private final UserService userService;
 
     @PostMapping()
-    public Review addReview(@RequestBody Review review) {
+    public Review addReview(@Valid @RequestBody Review review) {
+        if (review.getUserId() < 0 || review.getFilmId() < 0) {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
+
         return reviewService.createReview(review);
     }
 
@@ -39,10 +45,10 @@ public class ReviewController {
     }
 
     @GetMapping()
-    public Collection<Review> getReviewsFilms(int filmId, @RequestParam(defaultValue = "10") int count) {
-        Collection<Review> reviews = null;
-        if (filmId == 0) {
-            reviews = reviewService.returnAllReview();
+    public Collection<Review> getReviewsFilms(@RequestParam(defaultValue = "-1") int filmId, @RequestParam(defaultValue = "10") int count) {
+        Collection<Review> reviews;
+        if (filmId == -1) {
+            reviews = reviewService.returnReviewByCount(count);
         } else {
             reviews = reviewService.getReviewByFilmIdAndByCount(filmId, count);
         }

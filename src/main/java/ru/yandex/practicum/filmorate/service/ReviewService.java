@@ -18,18 +18,22 @@ public class ReviewService {
 
     public void likeReview(int reviewId, int userId) {
         reviewDao.likeReview(reviewId, userId);
+        reviewDao.upUseful(reviewId);
     }
 
     public void unlikeReview(int reviewId, int userId) {
         reviewDao.unlikeReview(reviewId, userId);
+        reviewDao.downUseful(reviewId);
     }
 
     public void dislikeReview(int reviewId, int userId) {
         reviewDao.dislikeReview(reviewId, userId);
+        reviewDao.downUseful(reviewId);
     }
 
     public void unDislikeReview(int reviewId, int userId) {
         reviewDao.unDislikeReview(reviewId, userId);
+        reviewDao.upUseful(reviewId);
     }
 
     public Review createReview(Review review) {
@@ -64,8 +68,8 @@ public class ReviewService {
         }
     }
 
-    public Collection<Review> returnAllReview() {
-        return reviewDao.getAllReviews();
+    public Collection<Review> returnReviewByCount(int count) {
+        return reviewDao.getAllReviews(count);
     }
 
     public List<Review> getReviewByFilmIdAndByCount(int filmId, int count) {
