@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
+import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +36,14 @@ public class UserController {
 
     }
 
+    @GetMapping("/{id}/feed")
+    public List<Feed> getUserFeed(@PathVariable Integer id) {
+        if (userService.isValidUser(id)) {
+            return userService.getUserFeed(id);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
+    }
 
     @PutMapping()
     public User updateUser(@Valid @RequestBody User user) {

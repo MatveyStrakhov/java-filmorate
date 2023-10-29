@@ -30,7 +30,6 @@ public class Director {
         values.put("director_id", directorId);
         values.put("director", directorName);
         return values;
-
     }
 
 }
