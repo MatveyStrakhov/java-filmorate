@@ -2,18 +2,11 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.storage.FilmsExtractor;
 import ru.yandex.practicum.filmorate.storage.ReviewMapper;
-import ru.yandex.practicum.filmorate.storage.UserMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +111,7 @@ public class ReviewDao {
                 "ORDER BY r.useful DESC " +
                 "LIMIT ?";
         List<Review> reviews = jdbcTemplate.query(sql, reviewMapper,filmId ,count);
-        if (reviews != null && !reviews.isEmpty()) {
+        if (!reviews.isEmpty()) {
             return reviews;
         } else {
             return new ArrayList<>();
