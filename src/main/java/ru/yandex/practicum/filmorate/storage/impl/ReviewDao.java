@@ -30,6 +30,7 @@ public class ReviewDao {
         jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getIsPositive(), review.getReviewId());
         jdbcTemplate.update(sqlQueryInsertFilmsReviewsTable, review.getFilmId(), review.getReviewId());
         jdbcTemplate.update(sqlQueryInsertUsersReviewsTable, review.getUserId(), review.getReviewId());
+        EventDao.eventAdd(review.getReviewId(), "REVIEW", "ADD", review.getUserId());
         return getReviewById(review.getReviewId());
     }
 
@@ -39,7 +40,9 @@ public class ReviewDao {
         log.info("review update started");
         jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getContent(), review.getIsPositive(),
                 review.getReviewId());
-        return getReviewById(review.getReviewId());
+        Review reviewById = getReviewById(review.getReviewId());
+        EventDao.eventAdd(review.getReviewId(), "REVIEW", "UPDATE", reviewById.getUserId());
+        return reviewById;
     }
 
     public Review getReviewById(int reviewId) {
@@ -52,6 +55,7 @@ public class ReviewDao {
     }
 
     public void deleteReviewById(int reviewId) {
+        Review review = getReviewById(reviewId);
         String sqlQueryOnDeleteReviewInReviewsTable = "DELETE FROM reviews WHERE review_id = ?";
         String sqlQueryOnDeleteReviewInFilmsReviewsTable = "DELETE FROM films_reviews WHERE review_id = ?";
         String sqlQueryOnDeleteReviewInUsersReviewsTable = "DELETE FROM users_reviews WHERE review_id = ?";
@@ -60,6 +64,7 @@ public class ReviewDao {
         jdbcTemplate.update(sqlQueryOnDeleteReviewInUsersReviewsTable, reviewId);
         jdbcTemplate.update(sqlQueryOnDeleteReviewInLikesReviewsTable, reviewId);
         jdbcTemplate.update(sqlQueryOnDeleteReviewInReviewsTable, reviewId);
+        EventDao.eventAdd(review.getReviewId(), "REVIEW", "REMOVE", review.getUserId());
     }
 
     public List<Review> getAllReviews(int count) {

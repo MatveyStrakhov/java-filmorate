@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
+import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -35,8 +36,6 @@ public class UserService {
             throw new IncorrectIdException("You cannot add or remove yourself from friends!");
         } else {
             return userStorage.removeFriend(userId1, userId2);
-
-
         }
     }
 
@@ -88,6 +87,10 @@ public class UserService {
         } else {
             throw new IdNotFoundException("User with this id does not exist!");
         }
+    }
+
+    public List<Feed> getUserFeed(Integer id) {
+        return userStorage.getUserFeed(id);
     }
 }
 
