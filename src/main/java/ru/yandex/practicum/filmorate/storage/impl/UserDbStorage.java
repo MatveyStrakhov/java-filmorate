@@ -104,6 +104,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User deleteUser(int id) {
         if (isValidUser(id)) {
+            String sqlForFeeds = "delete from feeds where user_id in (select id from users where id = ?)";
+            jdbcTemplate.update(sqlForFeeds, id);
             String sqlForLikes = "delete from likes where user_id in (select id from users where id = ?)";
             jdbcTemplate.update(sqlForLikes, id);
             String sqlForFriends = "delete from friends where following_user_id = ? or followed_user_id = ?";
