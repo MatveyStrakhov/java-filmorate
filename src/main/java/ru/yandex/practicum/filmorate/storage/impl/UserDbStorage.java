@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
@@ -13,10 +12,8 @@ import ru.yandex.practicum.filmorate.storage.FilmsExtractor;
 import ru.yandex.practicum.filmorate.storage.UserMapper;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-
 import java.util.Collection;
 import java.util.List;
-
 
 @Component("dbStorage")
 @Primary
@@ -24,7 +21,6 @@ import java.util.List;
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserMapper userMapper;
-
 
     public UserDbStorage(JdbcTemplate jdbcTemplate, UserMapper userMapper, FilmsExtractor filmsExtractor) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,7 +35,6 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
-
         user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).intValue());
         return user;
     }
@@ -47,8 +42,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> returnAllUsers() {
         String sql = "SELECT * FROM users";
-        List<User> users = jdbcTemplate.query(
-                sql, userMapper);
+        List<User> users = jdbcTemplate.query(sql, userMapper);
         return users;
     }
 
@@ -66,7 +60,7 @@ public class UserDbStorage implements UserStorage {
                 user.getName(),
                 user.getBirthday(),
                 user.getId()) > 0) {
-            log.info("User updated: " + user.getId());
+            log.info("User updated: {}", user.getId());
             return user;
         } else {
             log.error("User update failure");
@@ -76,17 +70,16 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUserById(int userId) {
-        String sqlQuery = "SELECT * FROM users where id = " + userId + ";";
+        String sqlQuery = "SELECT * FROM users where id = ?";
         try {
-            User user = jdbcTemplate.queryForObject(sqlQuery, userMapper);
+            User user = jdbcTemplate.queryForObject(sqlQuery, userMapper, userId);
             log.info("User found: {} {}", user.getId(), user.getLogin());
             return user;
         } catch (DataAccessException e) {
-            log.info("User not found: " + userId);
+            log.info("User not found: {}", userId);
             throw new IdNotFoundException("User not found:" + userId);
         }
     }
-
 
     @Override
     public Collection<User> getFriendsList(int userId) {
@@ -94,9 +87,11 @@ public class UserDbStorage implements UserStorage {
             String sqlQuery = "SELECT id, email, login, name, birthday " +
                     "FROM users AS u " +
                     "JOIN friends AS f ON f.followed_user_id = u.id " +
-                    "WHERE f.following_user_id = " + userId + ";";
-            return jdbcTemplate.query(sqlQuery, userMapper);
-        }else throw new IdNotFoundException("User not found:" + userId);
+                    "WHERE f.following_user_id = ?";
+            return jdbcTemplate.query(sqlQuery, userMapper, userId);
+        } else {
+            throw new IdNotFoundException("User not found:" + userId);
+        }
     }
 
     @Override
@@ -109,7 +104,9 @@ public class UserDbStorage implements UserStorage {
             String sqlForFilms = "delete from users where id = ?";
             jdbcTemplate.update(sqlForFilms, id);
             return null;
-        } else throw new IdNotFoundException("Director not found!");
+        } else {
+            throw new IdNotFoundException("User not found!");
+        }
     }
 
     @Override
