@@ -24,7 +24,6 @@ public class ReviewController {
         if (review.getUserId() < 0 || review.getFilmId() < 0) {
             throw new IdNotFoundException("This ID doesn't exist!");
         }
-
         return reviewService.createReview(review);
     }
 
@@ -44,7 +43,8 @@ public class ReviewController {
     }
 
     @GetMapping()
-    public Collection<Review> getReviewsFilms(@RequestParam(defaultValue = "-1") int filmId, @RequestParam(defaultValue = "10") int count) {
+    public Collection<Review> getReviewsFilms(@RequestParam(defaultValue = "-1") int filmId,
+                                              @RequestParam(defaultValue = "10") int count) {
         Collection<Review> reviews;
         if (filmId == -1) {
             reviews = reviewService.returnReviewByCount(count);

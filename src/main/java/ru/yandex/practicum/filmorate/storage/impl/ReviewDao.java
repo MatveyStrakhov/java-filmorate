@@ -34,12 +34,12 @@ public class ReviewDao {
     }
 
     public Review updateReview(Review review) {
-        String sqlQueryUpdateReviewsTable = "UPDATE reviews SET content = ?, is_positive = ? "
-                + "WHERE review_id = ?";
-        String sqlQueryUpdateFilmsReviewsTable = "UPDATE films_reviews SET film_id = ? "
-                + "WHERE review_id = ?";
-        String sqlQueryUpdateUsersReviewsTable = "UPDATE users_reviews SET user_id = ? "
-                + "WHERE review_id = ?";
+        String sqlQueryUpdateReviewsTable = "UPDATE reviews SET content = ?, is_positive = ? " +
+                "WHERE review_id = ?";
+        String sqlQueryUpdateFilmsReviewsTable = "UPDATE films_reviews SET film_id = ? " +
+                "WHERE review_id = ?";
+        String sqlQueryUpdateUsersReviewsTable = "UPDATE users_reviews SET user_id = ? " +
+                "WHERE review_id = ?";
         log.info("review update started");
         jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getContent(), review.getIsPositive(),
                 review.getReviewId());

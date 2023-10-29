@@ -23,11 +23,11 @@ public class Review {
     private int filmId;
     private int useful;
 
-    public Review( int reviewId,
-                   @JsonProperty(value = "content" , required = true) String content,
-                   @JsonProperty(value = "isPositive" , required = true) boolean isPositive,
-                   @JsonProperty(value = "userId" , required = true) int userId,
-                   @JsonProperty(value = "filmId" , required = true) int filmId, int useful) {
+    public Review(int reviewId,
+                   @JsonProperty(value = "content", required = true) String content,
+                   @JsonProperty(value = "isPositive", required = true) boolean isPositive,
+                   @JsonProperty(value = "userId", required = true) int userId,
+                   @JsonProperty(value = "filmId", required = true) int filmId, int useful) {
         this.reviewId = reviewId;
         this.content = content;
         this.isPositive = isPositive;
