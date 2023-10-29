@@ -31,7 +31,6 @@ public class UserDbStorage implements UserStorage {
         this.userMapper = userMapper;
     }
 
-
     @Override
     public User createUser(User user) {
         if (user.getName().isEmpty() || user.getName().isBlank()) {
@@ -41,28 +40,17 @@ public class UserDbStorage implements UserStorage {
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
 
-
         user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).intValue());
         return user;
-
-
     }
-
 
     @Override
     public Collection<User> returnAllUsers() {
         String sql = "SELECT * FROM users";
-
-
         List<User> users = jdbcTemplate.query(
                 sql, userMapper);
-
-
         return users;
-
-
     }
-
 
     @Override
     public User updateUser(User user) {
@@ -84,12 +72,7 @@ public class UserDbStorage implements UserStorage {
             log.error("User update failure");
             throw new IdNotFoundException("User update failure");
         }
-
-
-
-
     }
-
 
     @Override
     public User getUserById(int userId) {
@@ -116,7 +99,6 @@ public class UserDbStorage implements UserStorage {
         }else throw new IdNotFoundException("User not found:" + userId);
     }
 
-
     @Override
     public User deleteUser(int id) {
         if (isValidUser(id)) {
@@ -130,24 +112,17 @@ public class UserDbStorage implements UserStorage {
         } else throw new IdNotFoundException("Director not found!");
     }
 
-
-
-
-
-
     @Override
     public boolean addFriend(int userId1, int userId2) {
         String sqlQuery = "insert into friends values(?,?)";
         return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
     }
 
-
     @Override
     public boolean removeFriend(int userId1, int userId2) {
         String sqlQuery = "delete from friends where following_user_id = ? AND followed_user_id = ?";
         return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
     }
-
 
     @Override
     public boolean isValidUser(int id) {
