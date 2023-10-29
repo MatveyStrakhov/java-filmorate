@@ -110,7 +110,7 @@ public class ReviewDao {
                 "WHERE fr.film_id = ? " +
                 "ORDER BY r.useful DESC " +
                 "LIMIT ?";
-        List<Review> reviews = jdbcTemplate.query(sql, reviewMapper,filmId ,count);
+        List<Review> reviews = jdbcTemplate.query(sql, reviewMapper, filmId, count);
         if (!reviews.isEmpty()) {
             return reviews;
         } else {
