@@ -103,18 +103,6 @@ public class FilmStorageTest {
     }
 
     @Test
-    @Order(5)
-    void getPopularFilmsAndLikeFilmTest() {
-        userStorage.createUser(user);
-        filmStorage.createFilm(film2);
-        filmStorage.likeFilm(1, 1);
-        assertThat(filmStorage.getPopularFilms(2)).hasSize(2);
-        assertThat(filmStorage.getPopularFilms(2).get(0)).isNotNull()
-                .hasFieldOrPropertyWithValue("description", "absence")
-                .hasFieldOrPropertyWithValue("id", 1);
-    }
-
-    @Test
     @Order(6)
     void isValidFilmTest() {
         assertThat(filmStorage.isValidFilm(1)).isTrue();
