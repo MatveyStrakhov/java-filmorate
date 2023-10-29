@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
@@ -12,8 +13,10 @@ import ru.yandex.practicum.filmorate.storage.FilmsExtractor;
 import ru.yandex.practicum.filmorate.storage.UserMapper;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+
 import java.util.Collection;
 import java.util.List;
+
 
 @Component("dbStorage")
 @Primary
@@ -22,10 +25,12 @@ public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserMapper userMapper;
 
+
     public UserDbStorage(JdbcTemplate jdbcTemplate, UserMapper userMapper, FilmsExtractor filmsExtractor) {
         this.jdbcTemplate = jdbcTemplate;
         this.userMapper = userMapper;
     }
+
 
     @Override
     public User createUser(User user) {
@@ -36,21 +41,28 @@ public class UserDbStorage implements UserStorage {
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
 
+
         user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).intValue());
         return user;
 
+
     }
+
 
     @Override
     public Collection<User> returnAllUsers() {
         String sql = "SELECT * FROM users";
 
+
         List<User> users = jdbcTemplate.query(
                 sql, userMapper);
 
+
         return users;
 
+
     }
+
 
     @Override
     public User updateUser(User user) {
@@ -74,7 +86,10 @@ public class UserDbStorage implements UserStorage {
         }
 
 
+
+
     }
+
 
     @Override
     public User getUserById(int userId) {
@@ -92,18 +107,33 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getFriendsList(int userId) {
-        String sqlQuery = "SELECT id, email, login, name, birthday " +
-                "FROM users AS u " +
-                "JOIN friends AS f ON  f.followed_user_id = u.id " +
-                "WHERE f.following_user_id = " + userId + ";";
-        return jdbcTemplate.query(sqlQuery, userMapper);
+        if (isValidUser(userId)) {
+            String sqlQuery = "SELECT id, email, login, name, birthday " +
+                    "FROM users AS u " +
+                    "JOIN friends AS f ON f.followed_user_id = u.id " +
+                    "WHERE f.following_user_id = " + userId + ";";
+            return jdbcTemplate.query(sqlQuery, userMapper);
+        }else throw new IdNotFoundException("User not found:" + userId);
     }
 
+
     @Override
-    public boolean deleteUser(int id) {
-        String sqlQuery = "delete from users where id = ?";
-        return jdbcTemplate.update(sqlQuery, id) > 0;
+    public User deleteUser(int id) {
+        if (isValidUser(id)) {
+            String sqlForLikes = "delete from likes where user_id in (select id from users where id = ?)";
+            jdbcTemplate.update(sqlForLikes, id);
+            String sqlForFriends = "delete from friends where following_user_id = ? or followed_user_id = ?";
+            jdbcTemplate.update(sqlForFriends, id, id);
+            String sqlForFilms = "delete from users where id = ?";
+            jdbcTemplate.update(sqlForFilms, id);
+            return null;
+        } else throw new IdNotFoundException("Director not found!");
     }
+
+
+
+
+
 
     @Override
     public boolean addFriend(int userId1, int userId2) {
@@ -111,11 +141,13 @@ public class UserDbStorage implements UserStorage {
         return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
     }
 
+
     @Override
     public boolean removeFriend(int userId1, int userId2) {
         String sqlQuery = "delete from friends where following_user_id = ? AND followed_user_id = ?";
         return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
     }
+
 
     @Override
     public boolean isValidUser(int id) {

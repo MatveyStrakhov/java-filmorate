@@ -16,7 +16,7 @@ public interface UserStorage {
 
     Collection<User> getFriendsList(int id);
 
-    boolean deleteUser(int id);
+    User deleteUser(int id);
 
     boolean addFriend(int userId1, int userId2);
 
