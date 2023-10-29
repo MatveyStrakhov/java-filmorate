@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
@@ -13,6 +15,9 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.FilmsExtractor;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,10 +36,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("films").usingGeneratedKeyColumns("id");
-
-
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).intValue());
         if (film.getGenres() != null) {
             String sql = "MERGE INTO film_genre VALUES(?,?);";
@@ -44,8 +46,6 @@ public class FilmDbStorage implements FilmStorage {
             String sql = "MERGE INTO film_director VALUES(?,?);";
             film.getDirectors().forEach((Director director) -> jdbcTemplate.update(sql, film.getId(), director.getDirectorId()));
         }
-
-
         return film;
     }
 
@@ -171,12 +171,14 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void likeFilm(Integer filmId, Integer userId) {
+        EventDao.eventAdd(filmId, "LIKE", "ADD", userId);
         String sql = "MERGE INTO likes(user_id, film_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, userId, filmId);
     }
 
     @Override
     public void unlikeFilm(Integer filmId, Integer userId) {
+        EventDao.eventAdd(filmId, "LIKE", "REMOVE", userId);
         String sql = "DELETE FROM likes WHERE user_id = ? AND film_id = ?";
         jdbcTemplate.update(sql, userId, filmId);
     }
@@ -214,5 +216,20 @@ public class FilmDbStorage implements FilmStorage {
             default:
                 return new ArrayList<>();
         }
+    }
+
+    private void event2(int entityId, String eventType, String operation, int userId) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String sqlEvent = "INSERT INTO FEEDS (ENTITYID, EVENTTYPE, OPERATION, TIMESTAMP, USER_ID) VALUES(?,?,?,?,?)";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sqlEvent, Statement.RETURN_GENERATED_KEYS);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            ps.setInt(1, entityId);
+            ps.setString(2, eventType);
+            ps.setString(3, operation);
+            ps.setLong(4, timestamp.getTime());
+            ps.setInt(5, userId);
+            return ps;
+        }, keyHolder);
     }
 }
