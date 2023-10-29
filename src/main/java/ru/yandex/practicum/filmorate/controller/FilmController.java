@@ -66,12 +66,6 @@ public class FilmController {
         }
     }
 
-    @GetMapping(value = {"/popular"})
-    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
-        return filmService.getPopularFilms(count);
-
-    }
-
     @GetMapping("/director/{directorId}")
     public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
         if (directorService.isValidDirector(directorId)) {
@@ -90,4 +84,29 @@ public class FilmController {
         }
     }
 
+    @GetMapping("/popular")
+    public List<Film> findPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count,
+                                       @RequestParam(value = "genreId", required = false) Long genreId,
+                                       @RequestParam(value = "year", required = false) Integer year) {
+        if (genreId == null && year == null) {
+            log.info("Получен запрос GET /films/popular?count={count} — список фильмов по количеству лайков");
+            return filmService.findPopularFilms(count);
+        } else if (genreId == null) {
+            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по годам");
+            return filmService.findPopularFilms(count, year);
+        } else if (year == null) {
+            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по жанрам");
+            return filmService.findPopularFilms(count, genreId);
+        } else {
+            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по годам и жанрам");
+            return filmService.findPopularFilms(count, genreId, year);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFilm(@PathVariable Integer id) {
+        filmService.deleteFilm(id);
+    }
+
 }
+
