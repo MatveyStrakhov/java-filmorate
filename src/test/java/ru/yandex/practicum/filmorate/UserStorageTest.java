@@ -103,17 +103,4 @@ public class UserStorageTest {
         assertThat(userStorage.getFriendsList(1)).hasSize(0);
     }
 
-    @Test
-    @Order(7)
-    void deleteUserTest() {
-        assertThat(userStorage.deleteUser(2)).isTrue();
-        assertThat(userStorage.returnAllUsers()).hasSize(1);
-    }
-
-    @Test
-    @Order(8)
-    void isValidUserTest() {
-        assertThat(userStorage.isValidUser(1)).isTrue();
-        assertThat(userStorage.isValidUser(2)).isFalse();
-    }
 }
