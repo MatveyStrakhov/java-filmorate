@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Like;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 @Component
 
 public class LikesMapper implements RowMapper<Like> {

@@ -95,10 +95,11 @@ public class UserService {
     public List<Feed> getUserFeed(Integer id) {
         return userStorage.getUserFeed(id);
     }
+
     public List<Film> getRecommendedFilms(int userId) {
-        if(isValidUser(userId)){
-        return recommendationsDao.getRecommendedFilms(userId);}
-        else throw new IdNotFoundException("User not found!");
+        if (isValidUser(userId)) {
+            return recommendationsDao.getRecommendedFilms(userId);
+        } else throw new IdNotFoundException("User not found!");
     }
 }
 
