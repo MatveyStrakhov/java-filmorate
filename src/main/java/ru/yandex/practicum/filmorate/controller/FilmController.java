@@ -107,6 +107,7 @@ public class FilmController {
     public void deleteFilm(@PathVariable Integer id) {
         filmService.deleteFilm(id);
     }
+
     @GetMapping("/common")
     public List<Film> getPopularFilms(@RequestParam Integer userId, @RequestParam Integer friendId) {
         return filmService.getCommonFilms(userId, friendId);
