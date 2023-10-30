@@ -148,7 +148,7 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
                 "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
                 "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
-                "WHERE f.id IN (SELECT l.film_id FROM likes WHERE user_id = " + userId + ")";
+                "WHERE f.id IN (SELECT l.film_id FROM likes WHERE l.user_id = " + userId + ")";
         Collection<Film> films = jdbcTemplate.query(sql, filmsExtractor);
         if (films != null && !films.isEmpty()) {
             log.info("фильмы пользователя " + userId + ": " + films);
