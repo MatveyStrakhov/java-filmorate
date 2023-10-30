@@ -16,7 +16,7 @@ public interface FilmStorage {
 
     Film getFilmById(int filmId);
 
-    List<Film> getPopularFilms(int count);
+    List<Film> getFilmsByDirector(int directorId, String sortBy);
 
     void likeFilm(Integer filmId, Integer userId);
 
@@ -24,5 +24,22 @@ public interface FilmStorage {
 
     boolean isValidFilm(int id);
 
+    List<Film> searchFilms(String query, String by);
+
+    List<Film> findPopularFilms(Integer count);
+
+    // поиск популярных фильмов по году
+    List<Film> findPopularFilms(Integer count, Integer year);
+
+    // поиск популярных фильмов по жанру
+    List<Film> findPopularFilms(Integer count, Long genreId);
+
+    // поиск популярных фильмов по году и жанру
+    List<Film> findPopularFilms(Integer count, Long genreId, Integer year);
+
+    void deleteFilm(int filmId);
+
     Collection<Film> getFilmsByUser(Integer userId);
+}
+
 }

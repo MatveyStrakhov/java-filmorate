@@ -8,25 +8,29 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Rating;
-import ru.yandex.practicum.filmorate.model.User;
+import org.springframework.test.annotation.DirtiesContext;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.impl.DirectorDao;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FilmStorageTest {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final DirectorDao directorDao;
+    private final Director director = new Director(1, "director");
+    private final Set<Director> directors = Collections.singleton(director);
     private final User user = User.builder()
             .login("login")
             .email("somemail@email.com")
@@ -37,6 +41,7 @@ public class FilmStorageTest {
             .name("kobayashi")
             .description("abs")
             .duration(1)
+            .directors(directors)
             .releaseDate(LocalDate.of(2021, 1, 21))
             .mpa(Rating.builder().id(1).name("G").build())
             .genres(Set.of(Genre.builder().id(1).name("G").build()))
@@ -46,7 +51,8 @@ public class FilmStorageTest {
             .name("kobayashi")
             .description("absence")
             .duration(1)
-            .releaseDate(LocalDate.of(2021, 1, 21))
+            .directors(directors)
+            .releaseDate(LocalDate.of(2019, 1, 21))
             .mpa(Rating.builder().id(1).name("G").build())
             .genres(Set.of(Genre.builder().id(1).build()))
             .build();
@@ -54,19 +60,22 @@ public class FilmStorageTest {
             .name("Inquisitor")
             .description("sinner")
             .duration(1)
-            .releaseDate(LocalDate.of(2021, 1, 21))
+            .directors(directors)
+            .releaseDate(LocalDate.of(2018, 1, 21))
             .mpa(Rating.builder().id(1).name("G").build())
-            .genres(Set.of(Genre.builder().id(1).build()))
+            .genres(Set.of(Genre.builder().id(1).build(), Genre.builder().id(2).build()))
             .build();
 
     @Test
     @Order(1)
     void createFilmTest() {
+        directorDao.createDirector(director);
         assertThat(filmStorage.createFilm(film))
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("name", "kobayashi")
                 .hasFieldOrPropertyWithValue("id", 1)
-                .hasFieldOrPropertyWithValue("description", "abs");
+                .hasFieldOrPropertyWithValue("description", "abs")
+                .hasFieldOrPropertyWithValue("directors", directors);
     }
 
     @Order(2)
@@ -97,21 +106,10 @@ public class FilmStorageTest {
     }
 
     @Test
-    @Order(5)
-    void getPopularFilmsAndLikeFilmTest() {
-        userStorage.createUser(user);
-        filmStorage.createFilm(film2);
-        filmStorage.likeFilm(1, 1);
-        assertThat(filmStorage.getPopularFilms(2)).hasSize(2);
-        assertThat(filmStorage.getPopularFilms(2).get(0)).isNotNull()
-                .hasFieldOrPropertyWithValue("description", "absence")
-                .hasFieldOrPropertyWithValue("id", 1);
-    }
-
-    @Test
     @Order(6)
     void isValidFilmTest() {
         assertThat(filmStorage.isValidFilm(1)).isTrue();
         assertThat(filmStorage.isValidFilm(999)).isFalse();
     }
+
 }

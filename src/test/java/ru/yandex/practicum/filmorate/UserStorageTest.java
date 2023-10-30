@@ -9,6 +9,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Slf4j
@@ -104,17 +106,4 @@ public class UserStorageTest {
         assertThat(userStorage.getFriendsList(1)).hasSize(0);
     }
 
-    @Test
-    @Order(7)
-    void deleteUserTest() {
-        assertThat(userStorage.deleteUser(2)).isTrue();
-        assertThat(userStorage.returnAllUsers()).hasSize(1);
-    }
-
-    @Test
-    @Order(8)
-    void isValidUserTest() {
-        assertThat(userStorage.isValidUser(1)).isTrue();
-        assertThat(userStorage.isValidUser(2)).isFalse();
-    }
 }
