@@ -81,7 +81,7 @@ public class UserService {
         return userStorage.getFriendsList(id);
     }
 
-    public boolean deleteUser(int id) {
+    public User deleteUser(int id) {
         if (isValidUser(id)) {
             return userStorage.deleteUser(id);
         } else {

@@ -90,17 +90,32 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getFriendsList(int userId) {
-        String sqlQuery = "SELECT id, email, login, name, birthday " +
-                "FROM users AS u " +
-                "JOIN friends AS f ON  f.followed_user_id = u.id " +
-                "WHERE f.following_user_id = " + userId + ";";
-        return jdbcTemplate.query(sqlQuery, userMapper);
+        if (isValidUser(userId)) {
+            String sqlQuery = "SELECT id, email, login, name, birthday " +
+                    "FROM users AS u " +
+                    "JOIN friends AS f ON f.followed_user_id = u.id " +
+                    "WHERE f.following_user_id = ?";
+            return jdbcTemplate.query(sqlQuery, userMapper, userId);
+        } else {
+            throw new IdNotFoundException("User not found:" + userId);
+        }
     }
 
     @Override
-    public boolean deleteUser(int id) {
-        String sqlQuery = "delete from users where id = ?";
-        return jdbcTemplate.update(sqlQuery, id) > 0;
+    public User deleteUser(int id) {
+        if (isValidUser(id)) {
+            String sqlForFeeds = "delete from feeds where user_id in (select id from users where id = ?)";
+            jdbcTemplate.update(sqlForFeeds, id);
+            String sqlForLikes = "delete from likes where user_id in (select id from users where id = ?)";
+            jdbcTemplate.update(sqlForLikes, id);
+            String sqlForFriends = "delete from friends where following_user_id = ? or followed_user_id = ?";
+            jdbcTemplate.update(sqlForFriends, id, id);
+            String sqlForFilms = "delete from users where id = ?";
+            jdbcTemplate.update(sqlForFilms, id);
+            return null;
+        } else {
+            throw new IdNotFoundException("User not found!");
+        }
     }
 
     @Override
