@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.impl.RecommendationsDao;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
     private final UserStorage userStorage;
+    private final RecommendationsDao recommendationsDao;
 
     public boolean addFriend(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
@@ -91,6 +94,11 @@ public class UserService {
 
     public List<Feed> getUserFeed(Integer id) {
         return userStorage.getUserFeed(id);
+    }
+    public List<Film> getRecommendedFilms(int userId) {
+        if(isValidUser(userId)){
+        return recommendationsDao.getRecommendedFilms(userId);}
+        else throw new IdNotFoundException("User not found!");
     }
 }
 

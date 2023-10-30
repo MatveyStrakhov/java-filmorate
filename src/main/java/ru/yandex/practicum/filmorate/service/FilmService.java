@@ -14,6 +14,7 @@ import java.util.List;
 public class FilmService {
     private final FilmStorage filmStorage;
 
+
     public void likeFilm(int filmId, int userId) {
         filmStorage.likeFilm(filmId, userId);
     }
@@ -33,7 +34,6 @@ public class FilmService {
     public Film createFilm(Film film) {
         return filmStorage.createFilm(film);
     }
-
 
     public Collection<Film> returnAllFilms() {
         return filmStorage.returnAllFilms();
