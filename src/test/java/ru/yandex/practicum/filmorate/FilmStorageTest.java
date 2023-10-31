@@ -111,5 +111,4 @@ public class FilmStorageTest {
         assertThat(filmStorage.isValidFilm(1)).isTrue();
         assertThat(filmStorage.isValidFilm(999)).isFalse();
     }
-
 }
