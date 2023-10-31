@@ -38,4 +38,5 @@ public interface FilmStorage {
 
     void deleteFilm(int filmId);
 
+    Collection<Film> getFilmsByUser(Integer userId);
 }
