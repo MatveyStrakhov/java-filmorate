@@ -299,4 +299,25 @@ public class FilmDbStorage implements FilmStorage {
             jdbcTemplate.update(sqlForFilms, filmId);
         } else throw new IdNotFoundException("Director not found!");
     }
+
+    @Override
+    public Collection<Film>  getFilmsByUser(Integer userId) {
+        String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre, fd.director_id, d.director, " +
+                "FROM films AS f " +
+                "LEFT JOIN likes AS l ON f.id = l.film_id " +
+                "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
+                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
+                "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
+                "WHERE f.id IN (SELECT film_id FROM likes WHERE user_id = ?)";
+        Collection<Film> films = jdbcTemplate.query(sql, filmsExtractor, userId);
+        if (films != null && !films.isEmpty()) {
+            log.info("фильмы пользователя " + userId + ": " + films);
+            return films;
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }
