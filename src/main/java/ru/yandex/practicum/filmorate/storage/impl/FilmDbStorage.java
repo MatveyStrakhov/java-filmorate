@@ -143,12 +143,14 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void likeFilm(Integer filmId, Integer userId) {
+        EventDao.eventAdd(filmId, "LIKE", "ADD", userId);
         String sql = "MERGE INTO likes(user_id, film_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, userId, filmId);
     }
 
     @Override
     public void unlikeFilm(Integer filmId, Integer userId) {
+        EventDao.eventAdd(filmId, "LIKE", "REMOVE", userId);
         String sql = "DELETE FROM likes WHERE user_id = ? AND film_id = ?";
         jdbcTemplate.update(sql, userId, filmId);
     }
