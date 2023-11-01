@@ -190,21 +190,6 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-    private void event2(int entityId, String eventType, String operation, int userId) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sqlEvent = "INSERT INTO FEEDS (ENTITYID, EVENTTYPE, OPERATION, TIMESTAMP, USER_ID) VALUES(?,?,?,?,?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sqlEvent, Statement.RETURN_GENERATED_KEYS);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            ps.setInt(1, entityId);
-            ps.setString(2, eventType);
-            ps.setString(3, operation);
-            ps.setLong(4, timestamp.getTime());
-            ps.setInt(5, userId);
-            return ps;
-        }, keyHolder);
-    }
-
     @Override
     public List<Film> findPopularFilms(Integer count, Integer year) {
         String sql = "SELECT f.*, r.rating_name, fg.genre_id, g.genre, d.director, d.director_id " +
