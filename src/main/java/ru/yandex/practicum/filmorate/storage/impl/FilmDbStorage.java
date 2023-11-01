@@ -5,10 +5,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import java.util.LinkedHashSet;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -16,14 +13,8 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.FilmsExtractor;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -188,21 +179,6 @@ public class FilmDbStorage implements FilmStorage {
             default:
                 return new ArrayList<>();
         }
-    }
-
-    private void event2(int entityId, String eventType, String operation, int userId) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sqlEvent = "INSERT INTO FEEDS (ENTITYID, EVENTTYPE, OPERATION, TIMESTAMP, USER_ID) VALUES(?,?,?,?,?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sqlEvent, Statement.RETURN_GENERATED_KEYS);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            ps.setInt(1, entityId);
-            ps.setString(2, eventType);
-            ps.setString(3, operation);
-            ps.setLong(4, timestamp.getTime());
-            ps.setInt(5, userId);
-            return ps;
-        }, keyHolder);
     }
 
     @Override
