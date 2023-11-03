@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,10 +19,9 @@ import java.util.List;
 @RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
+
     private final FilmService filmService;
     private final UserService userService;
-    private final DirectorService directorService;
-
 
     @PostMapping()
     public Film addFilm(@Valid @RequestBody Film film) {
@@ -35,11 +35,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilms(@PathVariable Integer id) {
-        if (!filmService.isValidFilm(id)) {
-            throw new IdNotFoundException("This ID doesn't exist!");
-        } else {
-            return filmService.getFilmById(id);
-        }
+        return filmService.getFilmById(id);
     }
 
     @PutMapping()
@@ -67,11 +63,7 @@ public class FilmController {
 
     @GetMapping("/director/{directorId}")
     public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
-        if (directorService.isValidDirector(directorId)) {
-            return filmService.getFilmsByDirector(directorId, sortBy);
-        } else {
-            throw new IdNotFoundException("Director id not found!");
-        }
+        return filmService.getFilmsByDirector(directorId, sortBy);
     }
 
     @GetMapping("/search")
@@ -80,7 +72,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> findPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count,
+    public List<Film> findPopularFilms(@RequestParam(defaultValue = "10", required = false) @Min(1) Integer count,
                                        @RequestParam(value = "genreId", required = false) Long genreId,
                                        @RequestParam(value = "year", required = false) Integer year) {
         log.info("Получен запрос /films/popular?count={limit}&GenreId={GenreId}&year={год} — список популярных фильмов");
@@ -99,6 +91,4 @@ public class FilmController {
         return filmService.getCommonFilms(userId, friendId);
     }
 
-
 }
-
