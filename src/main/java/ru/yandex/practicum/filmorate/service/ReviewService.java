@@ -7,36 +7,56 @@ import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.impl.ReviewDao;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ReviewService {
+public class ReviewService implements IReviewService {
     private final ReviewDao reviewDao;
+    private final UserService userService;
 
     public void likeReview(int reviewId, int userId) {
-        reviewDao.likeReview(reviewId, userId);
-        reviewDao.upUseful(reviewId);
+        if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
+            reviewDao.likeReview(reviewId, userId);
+            reviewDao.upUseful(reviewId);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
 
     public void unlikeReview(int reviewId, int userId) {
-        reviewDao.unlikeReview(reviewId, userId);
-        reviewDao.downUseful(reviewId);
+        if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
+            reviewDao.unlikeReview(reviewId, userId);
+            reviewDao.downUseful(reviewId);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
 
     public void dislikeReview(int reviewId, int userId) {
-        reviewDao.dislikeReview(reviewId, userId);
-        reviewDao.downUseful(reviewId);
+        if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
+            reviewDao.dislikeReview(reviewId, userId);
+            reviewDao.downUseful(reviewId);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
 
     public void unDislikeReview(int reviewId, int userId) {
-        reviewDao.unDislikeReview(reviewId, userId);
-        reviewDao.upUseful(reviewId);
+        if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
+            reviewDao.unDislikeReview(reviewId, userId);
+            reviewDao.upUseful(reviewId);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
 
     public Review createReview(Review review) {
+        if (review.getUserId() < 0 || review.getFilmId() < 0) {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
+
         return reviewDao.createReview(review);
     }
 
@@ -68,12 +88,14 @@ public class ReviewService {
         }
     }
 
-    public Collection<Review> returnReviewByCount(int count) {
-        return reviewDao.getAllReviews(count);
-    }
-
     public List<Review> getReviewByFilmIdAndByCount(int filmId, int count) {
-        return reviewDao.getReviewsByCount(filmId, count);
+        List<Review> reviews;
+        if (filmId == -1) {
+            reviews = reviewDao.getAllReviews(count);
+        } else {
+            reviews = reviewDao.getReviewsByCount(filmId, count);
+        }
+        return reviews;
     }
 
 }

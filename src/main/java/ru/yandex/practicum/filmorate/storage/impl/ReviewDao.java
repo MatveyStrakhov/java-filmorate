@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewMapper;
+import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ReviewDao {
+public class ReviewDao implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
     private final ReviewMapper reviewMapper;
     private static final boolean LIKE = true;
@@ -130,5 +131,4 @@ public class ReviewDao {
         log.debug("downUseful update started");
         jdbcTemplate.update(sql, reviewId);
     }
-
 }
