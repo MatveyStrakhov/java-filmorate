@@ -23,6 +23,7 @@ public class ReviewDao implements ReviewStorage {
     private static final boolean LIKE = true;
     private static final boolean DISLIKE = false;
 
+    @Override
     public Review createReview(Review review) {
         String sqlQueryInsertFilmsReviewsTable = "INSERT INTO films_reviews(film_id, review_id) VALUES (?, ?);";
         String sqlQueryInsertUsersReviewsTable = "INSERT INTO users_reviews(user_id, review_id) VALUES (?, ?);";
@@ -37,6 +38,7 @@ public class ReviewDao implements ReviewStorage {
         return getReviewById(review.getReviewId());
     }
 
+    @Override
     public Review updateReview(Review review) {
         String sqlQueryUpdateReviewsTable = "UPDATE reviews SET content = ?, is_positive = ? " +
                 "WHERE review_id = ?";
@@ -48,6 +50,7 @@ public class ReviewDao implements ReviewStorage {
         return reviewById;
     }
 
+    @Override
     public Review getReviewById(int reviewId) {
         String sqlQuery = "SELECT r.review_id, r.content, r.is_positive, r.useful, ur.user_id, fr.film_id " +
                     "FROM reviews AS r " +
@@ -57,6 +60,7 @@ public class ReviewDao implements ReviewStorage {
         return jdbcTemplate.queryForObject(sqlQuery, reviewMapper, reviewId);
     }
 
+    @Override
     public void deleteReviewById(int reviewId) {
         Review review = getReviewById(reviewId);
         String sqlQueryOnDeleteReviewInReviewsTable = "DELETE FROM reviews WHERE review_id = ?";
@@ -70,6 +74,7 @@ public class ReviewDao implements ReviewStorage {
         eventDao.eventAdd(review.getReviewId(), "REVIEW", "REMOVE", review.getUserId());
     }
 
+    @Override
     public List<Review> getAllReviews(int count) {
         String sqlQuery = "SELECT r.review_id, r.content, r.is_positive, r.useful, ur.user_id, fr.film_id " +
                 "FROM reviews AS r " +
@@ -80,30 +85,36 @@ public class ReviewDao implements ReviewStorage {
         return jdbcTemplate.query(sqlQuery, reviewMapper, count);
     }
 
+    @Override
     public void likeReview(Integer reviewId, Integer userId) {
         String sql = "MERGE INTO likes_reviews (user_id, review_id, is_like) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, userId, reviewId, LIKE);
     }
 
+    @Override
     public void unlikeReview(Integer reviewId, Integer userId) {
         String sql = "DELETE FROM likes_reviews WHERE user_id = ? AND review_id = ? AND is_like = ?";
         jdbcTemplate.update(sql, userId, reviewId, LIKE);
     }
 
+    @Override
     public void dislikeReview(Integer reviewId, Integer userId) {
         String sql = "MERGE INTO likes_reviews (user_id, review_id, is_like) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, userId, reviewId, DISLIKE);
     }
 
+    @Override
     public void unDislikeReview(Integer reviewId, Integer userId) {
         String sql = "DELETE FROM likes_reviews WHERE user_id = ? AND review_id = ? AND is_like = ?";
         jdbcTemplate.update(sql, userId, reviewId, DISLIKE);
     }
 
+    @Override
     public boolean isValidReview(int reviewId) {
         return jdbcTemplate.queryForRowSet("SELECT review_id FROM reviews WHERE review_id=?", reviewId).next();
     }
 
+    @Override
     public List<Review> getReviewsByCount(int filmId, int count) {
         String sql = "SELECT r.review_id, r.content, r.is_positive, r.useful, ur.user_id, fr.film_id " +
                 "FROM reviews AS r " +
@@ -120,6 +131,7 @@ public class ReviewDao implements ReviewStorage {
         }
     }
 
+    @Override
     public void upUseful(int reviewId) {
         String sql = "UPDATE reviews SET useful = useful + 1 "
                 + "WHERE review_id = ?";
@@ -127,6 +139,7 @@ public class ReviewDao implements ReviewStorage {
         jdbcTemplate.update(sql, reviewId);
     }
 
+    @Override
     public void downUseful(int reviewId) {
         String sql = "UPDATE reviews SET useful = useful - 1 "
                 + "WHERE review_id = ?";
