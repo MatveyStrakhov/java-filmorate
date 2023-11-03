@@ -28,9 +28,8 @@ public class FilmService {
         filmStorage.unlikeFilm(filmId, userId);
     }
 
-
     public List<Film> getPopularFilms(int count) {
-        return filmStorage.getPopularFilms(count);
+        return filmStorage.findPopularFilms(count);
     }
 
     public List<Film> getFilmsByDirector(int directorId, String sortBy) {
