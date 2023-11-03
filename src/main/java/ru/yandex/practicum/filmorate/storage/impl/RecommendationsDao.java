@@ -27,12 +27,6 @@ public class RecommendationsDao {
     private final LikesMapper likesMapper;
     private final JdbcTemplate jdbcTemplate;
 
-    private List<Like> getLikes() {
-        String sql = "SELECT * FROM likes";
-        List<Like> likes = jdbcTemplate.query(sql, likesMapper);
-        return likes;
-    }
-
     public List<Film> getRecommendedFilms(int userId) {
         HashMap<Integer, HashMap<Film, Double>> initialData = new HashMap<>();
         Set<Film> films = filmStorage.returnAllFilms().stream().sorted(Comparator.comparing(Film::getId, Integer::compareTo)).collect(Collectors.toCollection(LinkedHashSet::new));
@@ -55,6 +49,11 @@ public class RecommendationsDao {
                 }
             }
         return SlopeOne.slopeOne(initialData, films, userId);
+    }
+
+    private List<Like> getLikes() {
+        String sql = "SELECT * FROM likes";
+        return jdbcTemplate.query(sql, likesMapper);
     }
 
     private static class SlopeOne {
