@@ -98,7 +98,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User deleteUser(int id) {
+    public void deleteUser(int id) {
         if (isValidUser(id)) {
             String sqlForFeeds = "DELETE FROM feeds WHERE user_id IN (SELECT id FROM users WHERE id = ?)";
             jdbcTemplate.update(sqlForFeeds, id);
@@ -108,7 +108,6 @@ public class UserDbStorage implements UserStorage {
             jdbcTemplate.update(sqlForFriends, id, id);
             String sqlForFilms = "DELETE FROM users WHERE id = ?";
             jdbcTemplate.update(sqlForFilms, id);
-            return null;
         } else {
             throw new IdNotFoundException("User not found!");
         }
