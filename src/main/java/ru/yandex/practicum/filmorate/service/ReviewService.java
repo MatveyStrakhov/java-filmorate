@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.iservice.IReviewService;
 import ru.yandex.practicum.filmorate.storage.impl.ReviewDao;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class ReviewService implements IReviewService {
     private final ReviewDao reviewDao;
     private final UserService userService;
 
+    @Override
     public void likeReview(int reviewId, int userId) {
         if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
             reviewDao.likeReview(reviewId, userId);
@@ -25,6 +27,7 @@ public class ReviewService implements IReviewService {
         }
     }
 
+    @Override
     public void unlikeReview(int reviewId, int userId) {
         if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
             reviewDao.unlikeReview(reviewId, userId);
@@ -34,6 +37,7 @@ public class ReviewService implements IReviewService {
         }
     }
 
+    @Override
     public void dislikeReview(int reviewId, int userId) {
         if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
             reviewDao.dislikeReview(reviewId, userId);
@@ -43,6 +47,7 @@ public class ReviewService implements IReviewService {
         }
     }
 
+    @Override
     public void unDislikeReview(int reviewId, int userId) {
         if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
             reviewDao.unDislikeReview(reviewId, userId);
@@ -52,6 +57,7 @@ public class ReviewService implements IReviewService {
         }
     }
 
+    @Override
     public Review createReview(Review review) {
         if (review.getUserId() < 0 || review.getFilmId() < 0) {
             throw new IdNotFoundException("This ID doesn't exist!");
@@ -60,10 +66,12 @@ public class ReviewService implements IReviewService {
         return reviewDao.createReview(review);
     }
 
+    @Override
     public boolean isValidReviewById(int id) {
         return reviewDao.isValidReview(id);
     }
 
+    @Override
     public Review getReviewById(int id) {
         if (isValidReviewById(id)) {
             return reviewDao.getReviewById(id);
@@ -72,6 +80,7 @@ public class ReviewService implements IReviewService {
         }
     }
 
+    @Override
     public Review updateReview(Review review) {
         if (isValidReviewById(review.getReviewId())) {
             return reviewDao.updateReview(review);
@@ -80,6 +89,7 @@ public class ReviewService implements IReviewService {
         }
     }
 
+    @Override
     public void deleteReviewById(int id) {
         if (isValidReviewById(id)) {
             reviewDao.deleteReviewById(id);
@@ -88,6 +98,7 @@ public class ReviewService implements IReviewService {
         }
     }
 
+    @Override
     public List<Review> getReviewByFilmIdAndByCount(int filmId, int count) {
         List<Review> reviews;
         if (filmId == -1) {
