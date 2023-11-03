@@ -63,8 +63,6 @@ public class FilmsExtractor implements ResultSetExtractor<List<Film>> {
                     directors.put(film.getId(), directorsOfFilm);
                 }
             }
-
-
         }
 
         for (Integer id : films.keySet()) {

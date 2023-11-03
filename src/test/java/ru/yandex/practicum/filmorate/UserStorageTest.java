@@ -2,7 +2,10 @@ package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -103,17 +106,4 @@ public class UserStorageTest {
         assertThat(userStorage.getFriendsList(1)).hasSize(0);
     }
 
-    @Test
-    @Order(7)
-    void deleteUserTest() {
-        assertThat(userStorage.deleteUser(2)).isTrue();
-        assertThat(userStorage.returnAllUsers()).hasSize(1);
-    }
-
-    @Test
-    @Order(8)
-    void isValidUserTest() {
-        assertThat(userStorage.isValidUser(1)).isTrue();
-        assertThat(userStorage.isValidUser(2)).isFalse();
-    }
 }

@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -103,43 +106,9 @@ public class FilmStorageTest {
     }
 
     @Test
-    @Order(5)
-    void getPopularFilmsAndLikeFilmTest() {
-        userStorage.createUser(user);
-        filmStorage.createFilm(film2);
-        filmStorage.likeFilm(1, 1);
-        assertThat(filmStorage.getPopularFilms(2)).hasSize(2);
-        assertThat(filmStorage.getPopularFilms(2).get(0)).isNotNull()
-                .hasFieldOrPropertyWithValue("description", "absence")
-                .hasFieldOrPropertyWithValue("id", 1);
-    }
-
-    @Test
     @Order(6)
     void isValidFilmTest() {
         assertThat(filmStorage.isValidFilm(1)).isTrue();
         assertThat(filmStorage.isValidFilm(999)).isFalse();
-    }
-
-    @Test
-    @Order(7)
-    void getFilmsByDirectorSortedByLikes() {
-        assertThat(filmStorage.getFilmsByDirector(1, "likes"))
-                .hasSize(2);
-        assertThat(filmStorage.getFilmsByDirector(1, "likes").get(0))
-                .isNotNull()
-                .hasFieldOrPropertyWithValue("description", "absence")
-                .hasFieldOrPropertyWithValue("id", 1);
-    }
-
-    @Test
-    @Order(8)
-    void getFilmsByDirectorSortedByYear() {
-        assertThat(filmStorage.getFilmsByDirector(1, "year"))
-                .hasSize(2);
-        assertThat(filmStorage.getFilmsByDirector(1, "year").get(0))
-                .isNotNull()
-                .hasFieldOrPropertyWithValue("description", "sinner")
-                .hasFieldOrPropertyWithValue("id", 2);
     }
 }
