@@ -39,32 +39,32 @@ public class RecommendationsDao implements RecommendationsStorage {
             HashMap<Film, Double> filmMarkMap = new HashMap<>();
             initialData.put(id, filmMarkMap);
             for (Film film : films) {
-                for (Like like : likes) {
-                    if ((like.getFilmId() == film.getId()) && (id == like.getUserId())) {
+                likes.forEach(like -> {
+                    if ((like.getFilmId() == film.getId()) && (Objects.equals(id, like.getUserId()))) {
                         Double mark = 10.0;
                         filmMarkMap.put(film, mark);
                         initialData.put(id, filmMarkMap);
                     }
+                });
                 }
             }
-        }
-        return SlopeOne.slopeOne(initialData, films, userId);
+        SlopeOne slopeOne = new SlopeOne();
+        return slopeOne.slopeOne(initialData, films, userId);
     }
 
     private List<Like> getLikes() {
         String sql = "SELECT * FROM likes";
-        List<Like> likes = jdbcTemplate.query(sql, likesMapper);
-        return likes;
+        return jdbcTemplate.query(sql, likesMapper);
     }
 
     private static class SlopeOne {
 
-        private static Map<Film, Map<Film, Double>> diff = new HashMap<>();
-        private static Map<Film, Map<Film, Integer>> freq = new HashMap<>();
-        private static Map<Integer, HashMap<Film, Double>> outputData = new HashMap<>();
-        private static Set<Film> films;
+        private Map<Film, Map<Film, Double>> diff = new HashMap<>();
+        private Map<Film, Map<Film, Integer>> freq = new HashMap<>();
+        private final Map<Integer, HashMap<Film, Double>> outputData = new HashMap<>();
+        private Set<Film> films;
 
-        public static List<Film> slopeOne(Map<Integer, HashMap<Film, Double>> inputData, Set<Film> inputFilms, Integer userId) {
+        public List<Film> slopeOne(Map<Integer, HashMap<Film, Double>> inputData, Set<Film> inputFilms, Integer userId) {
             films = inputFilms;
             diff = new HashMap<>();
             freq = new HashMap<>();
@@ -74,7 +74,7 @@ public class RecommendationsDao implements RecommendationsStorage {
             return getRecommendedFilms(inputData, predictionMatrix, userId);
         }
 
-        private static void buildDifferencesMatrix(Map<Integer, HashMap<Film, Double>> data) {
+        private void buildDifferencesMatrix(Map<Integer, HashMap<Film, Double>> data) {
             for (HashMap<Film, Double> user : data.values()) {
                 for (Entry<Film, Double> e : user.entrySet()) {
                     if (!diff.containsKey(e.getKey())) {
@@ -105,7 +105,7 @@ public class RecommendationsDao implements RecommendationsStorage {
             }
         }
 
-        private static Map<Integer, HashMap<Film, Double>> predict(Map<Integer, HashMap<Film, Double>> data) {
+        private Map<Integer, HashMap<Film, Double>> predict(Map<Integer, HashMap<Film, Double>> data) {
             HashMap<Film, Double> uPred = new HashMap<>();
             HashMap<Film, Integer> uFreq = new HashMap<>();
             for (Film j : diff.keySet()) {
@@ -142,7 +142,7 @@ public class RecommendationsDao implements RecommendationsStorage {
             return outputData;
         }
 
-        private static List<Film> getRecommendedFilms(Map<Integer, HashMap<Film, Double>> originalData, Map<Integer, HashMap<Film, Double>> predictedData, int userId) {
+        private List<Film> getRecommendedFilms(Map<Integer, HashMap<Film, Double>> originalData, Map<Integer, HashMap<Film, Double>> predictedData, int userId) {
             Map<Film, Double> listOfRated = originalData.get(userId);
             Map<Film, Double> listWithPredicted = predictedData.get(userId);
             Set<Film> recommendedFilms = new LinkedHashSet<>();
@@ -152,8 +152,9 @@ public class RecommendationsDao implements RecommendationsStorage {
                 }
             }
             log.info("recommendation: " + recommendedFilms);
-            List<Film> output = recommendedFilms.stream().sorted(Comparator.comparing(Film::getId, Integer::compareTo)).collect(Collectors.toList());
-            return output;
+            return recommendedFilms.stream()
+                    .sorted(Comparator.comparing(Film::getId, Integer::compareTo))
+                    .collect(Collectors.toList());
         }
     }
 }

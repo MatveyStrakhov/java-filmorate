@@ -15,46 +15,25 @@ import java.util.List;
 @Slf4j
 public class ReviewService implements IReviewService {
     private final ReviewDao reviewDao;
-    private final UserService userService;
 
     @Override
     public void likeReview(int reviewId, int userId) {
-        if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
-            reviewDao.likeReview(reviewId, userId);
-            reviewDao.upUseful(reviewId);
-        } else {
-            throw new IdNotFoundException("This ID doesn't exist!");
-        }
+        reviewDao.likeReview(reviewId, userId);
     }
 
     @Override
     public void unlikeReview(int reviewId, int userId) {
-        if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
-            reviewDao.unlikeReview(reviewId, userId);
-            reviewDao.downUseful(reviewId);
-        } else {
-            throw new IdNotFoundException("This ID doesn't exist!");
-        }
+        reviewDao.unlikeReview(reviewId, userId);
     }
 
     @Override
     public void dislikeReview(int reviewId, int userId) {
-        if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
-            reviewDao.dislikeReview(reviewId, userId);
-            reviewDao.downUseful(reviewId);
-        } else {
-            throw new IdNotFoundException("This ID doesn't exist!");
-        }
+        reviewDao.dislikeReview(reviewId, userId);
     }
 
     @Override
     public void unDislikeReview(int reviewId, int userId) {
-        if (isValidReviewById(reviewId) && userService.isValidUser(userId)) {
-            reviewDao.unDislikeReview(reviewId, userId);
-            reviewDao.upUseful(reviewId);
-        } else {
-            throw new IdNotFoundException("This ID doesn't exist!");
-        }
+        reviewDao.unDislikeReview(reviewId, userId);
     }
 
     @Override
