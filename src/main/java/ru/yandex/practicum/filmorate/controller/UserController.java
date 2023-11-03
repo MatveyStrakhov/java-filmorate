@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
+
     private final UserService userService;
 
     @PostMapping()
@@ -35,7 +36,6 @@ public class UserController {
         } else {
             throw new IdNotFoundException("This ID doesn't exist!");
         }
-
     }
 
     @GetMapping("/{id}/feed")
@@ -73,8 +73,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public User deleteUser(@PathVariable int id) {
-        return userService.deleteUser(id);
+    public void deleteUser(@PathVariable int id) {
+        userService.deleteUser(id);
     }
 
     @GetMapping("/{id}/recommendations")
