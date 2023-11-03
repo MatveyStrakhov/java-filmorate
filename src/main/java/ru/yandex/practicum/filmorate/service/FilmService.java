@@ -57,52 +57,60 @@ public class FilmService {
         return filmStorage.searchFilms(query, by);
     }
 
-    //возвращает список первых фильмов по количеству лайков.
-    public List<Film> findPopularFilms(Integer count) {
-        if (count <= 0) {
-            throw new IdNotFoundException("count");
-        }
-
-        if (filmStorage.findPopularFilms(count) != null) {
-            return filmStorage.findPopularFilms(count);
-        } else {
-            return null;
-        }
-    }
-
-    // поиск популярных фильмов по году
-    public List<Film> findPopularFilms(Integer count, Integer year) {
-        if (count <= 0) {
-            throw new IdNotFoundException("count");
-        }
-
-        if (filmStorage.findPopularFilms(count, year) != null) {
-            return filmStorage.findPopularFilms(count, year);
-        } else {
-            return null;
-        }
-    }
-
-    // поиск популярных фильмов по жанру
-    public List<Film> findPopularFilms(Integer count, Long genreId) {
-        if (count <= 0) {
-            throw new IdNotFoundException("count");
-
-        }
-        if (filmStorage.findPopularFilms(count, genreId) != null) {
-            return filmStorage.findPopularFilms(count, genreId);
-        } else {
-            return null;
-        }
-    }
-
-    // поиск популярных фильмов по году и жанру
     public List<Film> findPopularFilms(Integer count, Long genreId, Integer year) {
+        if (genreId == null && year == null) {
+            return findPopularFilmsFromLikes(count);
+        } else if (genreId == null) {
+            return findPopularFilmsFromYear(count, year);
+        } else if (year == null) {
+            return findPopularFilmsFromGenre(count, genreId);
+        } else {
+            return findPopularFilmsFromYearAndGenre(count, genreId, year);
+        }
+    }
+
+    public List<Film> findPopularFilmsFromLikes(Integer count) {
         if (count <= 0) {
             throw new IdNotFoundException("count");
         }
-        if (filmStorage.findPopularFilms(count, genreId, year) != null) {
-            return filmStorage.findPopularFilms(count, genreId, year);
+
+        if (filmStorage.findPopularFilmsFromLikes(count) != null) {
+            return filmStorage.findPopularFilmsFromLikes(count);
+        } else {
+            return null;
+        }
+    }
+
+    public List<Film> findPopularFilmsFromYear(Integer count, Integer year) {
+        if (count <= 0) {
+            throw new IdNotFoundException("count");
+        }
+
+        if (filmStorage.findPopularFilmsFromYear(count, year) != null) {
+            return filmStorage.findPopularFilmsFromYear(count, year);
+        } else {
+            return null;
+        }
+    }
+
+    public List<Film> findPopularFilmsFromGenre(Integer count, Long genreId) {
+        if (count <= 0) {
+            throw new IdNotFoundException("count");
+
+        }
+        if (filmStorage.findPopularFilmsFromGenre(count, genreId) != null) {
+            return filmStorage.findPopularFilmsFromGenre(count, genreId);
+        } else {
+            return null;
+        }
+    }
+
+    public List<Film> findPopularFilmsFromYearAndGenre(Integer count, Long genreId, Integer year) {
+        if (count <= 0) {
+            throw new IdNotFoundException("count");
+        }
+        if (filmStorage.findPopularFilmsFromYearAndGenre(count, genreId, year) != null) {
+            return filmStorage.findPopularFilmsFromYearAndGenre(count, genreId, year);
         } else {
             return null;
         }

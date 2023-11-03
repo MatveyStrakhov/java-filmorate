@@ -182,72 +182,72 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findPopularFilms(Integer count, Integer year) {
+    public List<Film> findPopularFilmsFromYear(Integer count, Integer year) {
         String sql = "SELECT f.*, r.rating_name, fg.genre_id, g.genre, d.director, d.director_id " +
-                "FROM LIKES AS l " +
-                "RIGHT OUTER JOIN FILMS AS f ON l.FILM_ID = f.ID " +
-                "LEFT OUTER JOIN FILM_GENRE fg on f.ID = FG.FILM_ID " +
+                "FROM likes AS l " +
+                "RIGHT OUTER JOIN films AS f ON l.film_id = f.id " +
+                "LEFT OUTER JOIN film_genre fg on f.id = fg.film_id " +
                 "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
                 "LEFT JOIN genre AS g ON fg.genre_id = g.genre_id " +
-                "LEFT JOIN film_director AS fd ON f.ID = fd.film_id " +
+                "LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
                 "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
-                "WHERE EXTRACT(YEAR FROM f.RELEASE_DATE) = ? " +
-                "GROUP BY f.ID, r.rating_name, fg.genre_id, g.genre, d.director " +
-                "ORDER BY COUNT(l.USER_ID) DESC LIMIT ?";
+                "WHERE EXTRACT(year FROM f.release_date) = ? " +
+                "GROUP BY f.id, r.rating_name, fg.genre_id, g.genre, d.director " +
+                "ORDER BY COUNT(l.user_id) DESC LIMIT ?";
         return jdbcTemplate.query(sql, filmsExtractor, year, count);
     }
 
     @Override
-    public List<Film> findPopularFilms(Integer count, Long genreId) {
+    public List<Film> findPopularFilmsFromGenre(Integer count, Long genreId) {
         String sql = "SELECT f.*, r.rating_name, fg.genre_id, g.genre, d.director, d.director_id " +
-                "FROM LIKES AS l " +
-                "RIGHT OUTER JOIN FILMS AS f ON f.ID = l.FILM_ID " +
-                "LEFT OUTER JOIN FILM_GENRE fg ON f.ID = FG.FILM_ID " +
+                "FROM likes AS l " +
+                "RIGHT OUTER JOIN films AS f ON f.id = l.film_id " +
+                "LEFT OUTER JOIN film_genre fg ON f.id = fg.film_id " +
                 "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
                 "LEFT JOIN genre AS g ON fg.genre_id = g.genre_id " +
                 "LEFT JOIN film_director AS fd ON f.ID = fd.film_id " +
                 "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
-                "WHERE f.ID IN (SELECT DISTINCT FILM_ID FROM " +
-                " (SELECT fg2.FILM_ID , COUNT(l2.USER_ID) AS c " +
-                " FROM LIKES AS l2 RIGHT OUTER JOIN FILM_GENRE AS fg2 ON fg2.FILM_ID = l2.FILM_ID " +
-                " WHERE fg2.GENRE_ID = ? " +
-                " GROUP BY fg2.FILM_ID " +
+                "WHERE f.id IN (SELECT DISTINCT film_id FROM " +
+                " (SELECT fg2.film_id , COUNT(l2.user_id) AS c " +
+                " FROM likes AS l2 RIGHT OUTER JOIN film_genre AS fg2 ON fg2.film_id = l2.film_id " +
+                " WHERE fg2.genre_id = ? " +
+                " GROUP BY fg2.film_id " +
                 " ORDER BY c DESC ) " +
                 " LIMIT ?) " +
-                "GROUP BY f.ID, r.rating_name, fg.genre_id, g.genre " +
-                "ORDER BY COUNT(l.USER_ID) DESC";
+                "GROUP BY f.id, r.rating_name, fg.genre_id, g.genre " +
+                "ORDER BY COUNT(l.user_id) DESC";
         return jdbcTemplate.query(sql, filmsExtractor, genreId, count);
     }
 
     @Override
-    public List<Film> findPopularFilms(Integer count, Long genreId, Integer year) {
+    public List<Film> findPopularFilmsFromYearAndGenre(Integer count, Long genreId, Integer year) {
         Date startDate = (year != null) ? Date.valueOf(year + "-01-01") : null;
         String sql = "SELECT f.*, r.rating_name, fg.genre_id, g.genre, d.director, d.director_id " +
-                "FROM LIKES AS l " +
-                "RIGHT OUTER JOIN FILMS AS f ON f.ID = l.FILM_ID " +
-                "LEFT OUTER JOIN FILM_GENRE fg ON f.ID = FG.FILM_ID " +
+                "FROM likes AS l " +
+                "RIGHT OUTER JOIN films AS f ON f.id = l.film_id " +
+                "LEFT OUTER JOIN film_genre fg ON f.id = fg.film_id " +
                 "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
                 "LEFT JOIN genre AS g ON fg.genre_id = g.genre_id " +
-                "LEFT JOIN film_director AS fd ON f.ID = fd.film_id " +
+                "LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
                 "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
-                "WHERE f.ID IN (SELECT DISTINCT FILM_ID FROM " +
-                " (SELECT fg2.FILM_ID , COUNT(l2.USER_ID) AS c " +
-                " FROM LIKES AS l2 RIGHT OUTER JOIN FILM_GENRE AS fg2 ON fg2.FILM_ID = l2.FILM_ID " +
-                " WHERE fg2.GENRE_ID = ? " +
-                " GROUP BY fg2.FILM_ID " +
+                "WHERE f.id IN (SELECT DISTINCT film_id FROM " +
+                " (SELECT fg2.film_id , COUNT(l2.user_id) AS c " +
+                " FROM likes AS l2 RIGHT OUTER JOIN film_genre AS fg2 ON fg2.film_id = l2.film_id " +
+                " WHERE fg2.genre_id = ? " +
+                " GROUP BY fg2.film_id " +
                 " ORDER BY c DESC ) " +
                 " LIMIT ?) " +
                 "AND (f.release_date >= ? OR f.release_date IS NULL) " +
-                "GROUP BY f.ID, r.rating_name, fg.genre_id, g.genre " +
-                "ORDER BY COUNT(l.USER_ID) DESC";
+                "GROUP BY f.id, r.rating_name, fg.genre_id, g.genre " +
+                "ORDER BY COUNT(l.user_id) DESC";
         return jdbcTemplate.query(sql, filmsExtractor, genreId, count, startDate);
     }
 
     @Override
-    public List<Film> findPopularFilms(Integer count) {
+    public List<Film> findPopularFilmsFromLikes(Integer count) {
         String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
                 "f.rating_id, r.rating_name, fg.genre_id, g.genre, fd.director_id, d.director, " +
-                "COUNT(l.user_id) as count " +
+                "COUNT(l.user_id) AS count " +
                 "FROM films AS f " +
                 "LEFT JOIN likes AS l ON f.id = l.film_id " +
                 "LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
@@ -256,9 +256,9 @@ public class FilmDbStorage implements FilmStorage {
                 "LEFT JOIN film_director AS fd ON f.id = fd.film_id " +
                 "LEFT JOIN directors AS d ON fd.director_id = d.director_id " +
                 "WHERE f.id IN (SELECT DISTINCT id FROM " +
-                "(SELECT id , COUNT(l2.USER_ID) AS c " +
-                "FROM films as f2 " +
-                "LEFT JOIN likes AS l2 ON f2.ID = l2.FILM_ID " +
+                "(SELECT id , COUNT(l2.user_id) AS c " +
+                "FROM films AS f2 " +
+                "LEFT JOIN likes AS l2 ON f2.id = l2.film_id " +
                 "GROUP BY id " +
                 "ORDER BY c DESC ) " +
                 "LIMIT ?) " +
@@ -279,7 +279,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film>  getFilmsByUser(Integer userId) {
+    public Collection<Film> getFilmsByUser(Integer userId) {
         String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
                 "f.rating_id, r.rating_name, fg.genre_id, g.genre, fd.director_id, d.director, " +
                 "FROM films AS f " +
@@ -292,7 +292,6 @@ public class FilmDbStorage implements FilmStorage {
                 "WHERE f.id IN (SELECT film_id FROM likes WHERE user_id = ?)";
         Collection<Film> films = jdbcTemplate.query(sql, filmsExtractor, userId);
         if (films != null && !films.isEmpty()) {
-            log.info("фильмы пользователя " + userId + ": " + films);
             return films;
         } else {
             return new ArrayList<>();

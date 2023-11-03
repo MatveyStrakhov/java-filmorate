@@ -88,19 +88,8 @@ public class FilmController {
     public List<Film> findPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count,
                                        @RequestParam(value = "genreId", required = false) Long genreId,
                                        @RequestParam(value = "year", required = false) Integer year) {
-        if (genreId == null && year == null) {
-            log.info("Получен запрос GET /films/popular?count={count} — список фильмов по количеству лайков");
-            return filmService.findPopularFilms(count);
-        } else if (genreId == null) {
-            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по годам");
-            return filmService.findPopularFilms(count, year);
-        } else if (year == null) {
-            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по жанрам");
-            return filmService.findPopularFilms(count, genreId);
-        } else {
-            log.info("Получен запрос GET /films/popular?count={count}&year={year} — список лучших фильмов по годам и жанрам");
-            return filmService.findPopularFilms(count, genreId, year);
-        }
+        log.info("Получен запрос /films/popular?count={limit}&GenreId={GenreId}&year={год} — список популярных фильмов");
+        return filmService.findPopularFilms(count, genreId, year);
     }
 
     @DeleteMapping("/{id}")
@@ -110,6 +99,7 @@ public class FilmController {
 
     @GetMapping("/common")
     public List<Film> getPopularFilms(@RequestParam Integer userId, @RequestParam Integer friendId) {
+        log.info("Получен запрос GET /films/common?userId={userId}&friendId={friendId} — список общих фильмов");
         return filmService.getCommonFilms(userId, friendId);
     }
 
