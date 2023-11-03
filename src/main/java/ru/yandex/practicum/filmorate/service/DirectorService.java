@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Director;
+import ru.yandex.practicum.filmorate.service.iservice.IRecommendationService;
 import ru.yandex.practicum.filmorate.storage.impl.DirectorDao;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 
-public class DirectorService implements IDirectorService {
+public class DirectorService implements IRecommendationService {
     private final DirectorDao directorDao;
 
     @Override

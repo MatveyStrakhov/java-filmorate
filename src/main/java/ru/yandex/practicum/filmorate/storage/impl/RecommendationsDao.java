@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.LikesMapper;
+import ru.yandex.practicum.filmorate.storage.RecommendationsStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
@@ -18,13 +19,14 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class RecommendationsDao {
 
+public class RecommendationsDao implements RecommendationsStorage {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final LikesMapper likesMapper;
     private final JdbcTemplate jdbcTemplate;
 
+    @Override
     public List<Film> getRecommendedFilms(int userId) {
         HashMap<Integer, HashMap<Film, Double>> initialData = new HashMap<>();
         Set<Film> films = filmStorage.returnAllFilms().stream().sorted(Comparator.comparing(Film::getId, Integer::compareTo)).collect(Collectors.toCollection(LinkedHashSet::new));

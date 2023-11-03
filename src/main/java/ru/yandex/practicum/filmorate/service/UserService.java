@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
 import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.iservice.IUserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.impl.RecommendationsDao;
 
@@ -18,10 +19,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService {
+public class UserService implements IUserService {
     private final UserStorage userStorage;
     private final RecommendationsDao recommendationsDao;
 
+    @Override
     public boolean addFriend(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("User with this id does not exist!");
@@ -32,6 +34,7 @@ public class UserService {
         }
     }
 
+    @Override
     public boolean removeFriend(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("User with this id does not exist!");
@@ -42,6 +45,7 @@ public class UserService {
         }
     }
 
+    @Override
     public List<User> returnCommonFriends(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("Incorrect user Id");
@@ -54,19 +58,23 @@ public class UserService {
         }
     }
 
+    @Override
     public boolean isValidUser(int id) {
         return userStorage.isValidUser(id);
     }
 
+    @Override
     public User createUser(User user) {
         return userStorage.createUser(user);
     }
 
 
+    @Override
     public Collection<User> returnAllUsers() {
         return userStorage.returnAllUsers();
     }
 
+    @Override
     public User updateUser(User user) {
         if (isValidUser(user.getId())) {
             return userStorage.updateUser(user);
@@ -75,15 +83,18 @@ public class UserService {
         }
     }
 
+    @Override
     public User getUserById(int userId) {
         return userStorage.getUserById(userId);
     }
 
 
+    @Override
     public Collection<User> getFriendsList(int id) {
         return userStorage.getFriendsList(id);
     }
 
+    @Override
     public void deleteUser(int id) {
         if (isValidUser(id)) {
             userStorage.deleteUser(id);
@@ -92,10 +103,12 @@ public class UserService {
         }
     }
 
+    @Override
     public List<Feed> getUserFeed(Integer id) {
         return userStorage.getUserFeed(id);
     }
 
+    @Override
     public List<Film> getRecommendedFilms(int userId) {
         if (isValidUser(userId)) {
             return recommendationsDao.getRecommendedFilms(userId);
