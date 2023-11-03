@@ -182,28 +182,30 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> searchFilms(String query, String by) {
         String queryLower = query.toLowerCase();
-        String sqlBegin = "SELECT f.id, f.name, f.description, f.release_date, f.duration,\n" +
-                "f.rating_id, r.rating_name, fg.genre_id, g.genre, fd.director_id, d.director, COUNT(l.USER_ID) AS count \n" +
-                "FROM films AS f LEFT JOIN rating AS r ON f.rating_id = r.rating_id\n" +
-                "LEFT JOIN likes AS l ON f.id = l.film_id\n" +
-                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id\n" +
-                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id\n" +
-                "LEFT JOIN film_director AS fd ON f.id=fd.film_id\n" +
-                "LEFT JOIN directors AS d ON fd.director_id=d.director_id\n";
-        String sqlEnd = "GROUP BY F.ID\n" + "ORDER BY COUNT DESC;";
-        String sqlByTitle = sqlBegin + "WHERE LOWER(f.NAME) LIKE '%" + queryLower + "%'\n" + sqlEnd;
-        String sqlByDirector = sqlBegin + "WHERE LOWER(d.DIRECTOR) LIKE '%" + queryLower + "%'\n" + sqlEnd;
-        String sqlByTitleAndDirector = sqlBegin +
-                "WHERE LOWER(d.DIRECTOR) LIKE '%" + queryLower + "%'\n" +
-                "OR LOWER(f.NAME) LIKE '%" + queryLower + "%'\n" + sqlEnd;
+        StringBuilder sqlBegin = new StringBuilder("SELECT f.id, f.name, f.description, f.release_date, f.duration, " +
+                "f.rating_id, r.rating_name, fg.genre_id, g.genre, fd.director_id, d.director, COUNT(l.USER_ID) AS count " +
+                "FROM films AS f LEFT JOIN rating AS r ON f.rating_id = r.rating_id " +
+                "LEFT JOIN likes AS l ON f.id = l.film_id " +
+                "LEFT JOIN film_genre AS fg ON f.id=fg.film_id " +
+                "LEFT JOIN genre AS g ON fg.genre_id=g.genre_id " +
+                "LEFT JOIN film_director AS fd ON f.id=fd.film_id " +
+                "LEFT JOIN directors AS d ON fd.director_id=d.director_id ");
+        String sqlEnd = "GROUP BY F.ID " + "ORDER BY COUNT DESC;";
         switch (by) {
             case "title":
-                return jdbcTemplate.query(sqlByTitle, filmsExtractor);
+                StringBuilder sqlByTitle = sqlBegin.append("WHERE LOWER(f.name) LIKE '%")
+                        .append(queryLower).append("%' ").append(sqlEnd);
+                return jdbcTemplate.query(sqlByTitle.toString(), filmsExtractor);
             case "director":
-                return jdbcTemplate.query(sqlByDirector, filmsExtractor);
+                StringBuilder sqlByDirector = sqlBegin.append("WHERE LOWER(d.director) LIKE '%")
+                        .append(queryLower).append("%' ").append(sqlEnd);
+                return jdbcTemplate.query(sqlByDirector.toString(), filmsExtractor);
             case "director,title":
             case "title,director":
-                return jdbcTemplate.query(sqlByTitleAndDirector, filmsExtractor);
+                StringBuilder sqlByTitleAndDirector = sqlBegin.append("WHERE LOWER(d.director) LIKE '%")
+                        .append(queryLower).append("%' ").append("OR LOWER(f.name) LIKE '%").append(queryLower)
+                        .append("%' ").append(sqlEnd);
+                return jdbcTemplate.query(sqlByTitleAndDirector.toString(), filmsExtractor);
             default:
                 return new ArrayList<>();
         }
