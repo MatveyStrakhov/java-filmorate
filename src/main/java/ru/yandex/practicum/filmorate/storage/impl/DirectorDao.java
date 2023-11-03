@@ -57,8 +57,8 @@ public class DirectorDao implements DirectorStorage {
     @Override
     public void deleteDirector(int directorId) {
         if (isValidDirector(directorId)) {
-            String sqlForDirectors = "delete from directors where director_id=?";
-            String sqlForFilmDirector = "delete from film_director WHERE director_id=?";
+            String sqlForDirectors = "DELETE FROM directors WHERE director_id=?";
+            String sqlForFilmDirector = "DELETE FROM film_director WHERE director_id=?";
             jdbcTemplate.update(sqlForFilmDirector, directorId);
             jdbcTemplate.update(sqlForDirectors, directorId);
         } else throw new IdNotFoundException("Director not found!");
