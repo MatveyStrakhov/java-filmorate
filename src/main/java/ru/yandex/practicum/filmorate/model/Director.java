@@ -12,6 +12,7 @@ import java.util.Map;
 @Data
 @Builder
 public class Director {
+
     @JsonAlias("id")
     @JsonProperty("id")
     private Integer directorId;
