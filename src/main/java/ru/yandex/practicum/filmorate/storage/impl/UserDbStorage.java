@@ -72,7 +72,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUserById(int userId) {
-        String sqlQuery = "SELECT * FROM users where id = " + userId + ";";
+        String sqlQuery = "SELECT * FROM users WHERE id = " + userId + ";";
         try {
             User user = jdbcTemplate.queryForObject(sqlQuery, userMapper);
             log.info("User found: {} {}", user.getId(), user.getLogin());
@@ -100,13 +100,13 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User deleteUser(int id) {
         if (isValidUser(id)) {
-            String sqlForFeeds = "delete from feeds where user_id in (select id from users where id = ?)";
+            String sqlForFeeds = "DELETE FROM feeds WHERE user_id IN (SELECT id FROM users WHERE id = ?)";
             jdbcTemplate.update(sqlForFeeds, id);
-            String sqlForLikes = "delete from likes where user_id in (select id from users where id = ?)";
+            String sqlForLikes = "DELETE FROM likes WHERE user_id IN (SELECT id FROM users WHERE id = ?)";
             jdbcTemplate.update(sqlForLikes, id);
-            String sqlForFriends = "delete from friends where following_user_id = ? or followed_user_id = ?";
+            String sqlForFriends = "DELETE FROM friends WHERE following_user_id = ? OR followed_user_id = ?";
             jdbcTemplate.update(sqlForFriends, id, id);
-            String sqlForFilms = "delete from users where id = ?";
+            String sqlForFilms = "DELETE FROM users WHERE id = ?";
             jdbcTemplate.update(sqlForFilms, id);
             return null;
         } else {
@@ -117,25 +117,25 @@ public class UserDbStorage implements UserStorage {
     @Override
     public boolean addFriend(int userId1, int userId2) {
         eventDao.eventAdd(userId2, "FRIEND", "ADD", userId1);
-        String sqlQuery = "insert into friends values(?,?)";
+        String sqlQuery = "INSERT INTO friends VALUES(?,?)";
         return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
     }
 
     @Override
     public boolean removeFriend(int userId1, int userId2) {
         eventDao.eventAdd(userId2, "FRIEND", "REMOVE", userId1);
-        String sqlQuery = "delete from friends where following_user_id = ? AND followed_user_id = ?";
+        String sqlQuery = "DELETE FROM friends WHERE following_user_id = ? AND followed_user_id = ?";
         return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
     }
 
     @Override
     public boolean isValidUser(int id) {
-        return jdbcTemplate.queryForRowSet("SELECT id FROM users WHERE id=?", id).next();
+        return jdbcTemplate.queryForRowSet("SELECT id FROM users WHERE id = ?", id).next();
     }
 
     @Override
     public List<Feed> getUserFeed(Integer id) {
-        String sqlQuery = "SELECT * FROM FEEDS f WHERE USER_ID = ?;";
+        String sqlQuery = "SELECT * FROM feeds f WHERE user_id = ?;";
         return jdbcTemplate.query(sqlQuery, feedMapper, id);
     }
 }
