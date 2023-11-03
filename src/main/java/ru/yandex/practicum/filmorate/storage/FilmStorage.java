@@ -25,16 +25,13 @@ public interface FilmStorage {
 
     List<Film> searchFilms(String query, String by);
 
-    List<Film> findPopularFilms(Integer count);
+    List<Film> findPopularFilmsFromLikes(Integer count);
 
-    // поиск популярных фильмов по году
-    List<Film> findPopularFilms(Integer count, Integer year);
+    List<Film> findPopularFilmsFromYear(Integer count, Integer year);
 
-    // поиск популярных фильмов по жанру
-    List<Film> findPopularFilms(Integer count, Long genreId);
+    List<Film> findPopularFilmsFromGenre(Integer count, Long genreId);
 
-    // поиск популярных фильмов по году и жанру
-    List<Film> findPopularFilms(Integer count, Long genreId, Integer year);
+    List<Film> findPopularFilmsFromYearAndGenre(Integer count, Long genreId, Integer year);
 
     void deleteFilm(int filmId);
 

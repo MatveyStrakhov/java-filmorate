@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Feed;
@@ -13,10 +14,10 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-
     private final UserService userService;
 
     @PostMapping()
@@ -36,6 +37,7 @@ public class UserController {
         } else {
             throw new IdNotFoundException("This ID doesn't exist!");
         }
+
     }
 
     @GetMapping("/{id}/feed")
@@ -74,6 +76,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable int id) {
+        log.info("Получен запрос DELETE /users/{userId} — удаление пользователя");
         userService.deleteUser(id);
     }
 

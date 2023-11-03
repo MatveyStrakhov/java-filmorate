@@ -5,20 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.DirectorService;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
-
     private final FilmService filmService;
     private final UserService userService;
+    private final DirectorService directorService;
+
 
     @PostMapping()
     public Film addFilm(@Valid @RequestBody Film film) {
@@ -62,14 +66,44 @@ public class FilmController {
         }
     }
 
-    @GetMapping(value = {"/popular"})
-    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
-        return filmService.getPopularFilms(count);
-
-    }
-
     @GetMapping("/director/{directorId}")
     public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
-        return filmService.getFilmsByDirector(directorId, sortBy);
+        if (directorService.isValidDirector(directorId)) {
+            return filmService.getFilmsByDirector(directorId, sortBy);
+        } else {
+            throw new IdNotFoundException("Director id not found!");
+        }
     }
+
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query, @RequestParam String by) {
+        if (!query.isBlank()) {
+            return filmService.searchFilms(query, by);
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @GetMapping("/popular")
+    public List<Film> findPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count,
+                                       @RequestParam(value = "genreId", required = false) Long genreId,
+                                       @RequestParam(value = "year", required = false) Integer year) {
+        log.info("Получен запрос /films/popular?count={limit}&GenreId={GenreId}&year={год} — список популярных фильмов");
+        return filmService.findPopularFilms(count, genreId, year);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFilm(@PathVariable Integer id) {
+        log.info("Получен запрос DELETE /films/{filmId} — удален фильм");
+        filmService.deleteFilm(id);
+    }
+
+    @GetMapping("/common")
+    public List<Film> getPopularFilms(@RequestParam Integer userId, @RequestParam Integer friendId) {
+        log.info("Получен запрос GET /films/common?userId={userId}&friendId={friendId} — список общих фильмов");
+        return filmService.getCommonFilms(userId, friendId);
+    }
+
+
 }
+
