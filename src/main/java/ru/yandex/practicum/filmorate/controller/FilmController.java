@@ -83,11 +83,7 @@ public class FilmController {
 
     @GetMapping("/search")
     public List<Film> searchFilms(@RequestParam String query, @RequestParam String by) {
-        if (!query.isBlank()) {
-            return filmService.searchFilms(query, by);
-        } else {
-            return new ArrayList<>();
-        }
+        return filmService.searchFilms(query, by);
     }
 
 }

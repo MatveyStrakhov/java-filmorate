@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,6 +58,10 @@ public class FilmService {
     }
 
     public List<Film> searchFilms(String query, String by) {
-        return filmStorage.searchFilms(query, by);
+        if (!query.isBlank()) {
+            return filmStorage.searchFilms(query, by);
+        } else {
+            return new ArrayList<>();
+        }
     }
 }
