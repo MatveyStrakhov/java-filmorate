@@ -57,7 +57,11 @@ public class FilmService {
     }
 
     public List<Film> searchFilms(String query, String by) {
-        return filmStorage.searchFilms(query, by);
+        if (!query.isBlank()) {
+            return filmStorage.searchFilms(query, by);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public List<Film> findPopularFilms(Integer count, Long genreId, Integer year) {
