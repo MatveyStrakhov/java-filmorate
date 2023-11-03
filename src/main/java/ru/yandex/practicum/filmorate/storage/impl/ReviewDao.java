@@ -15,8 +15,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ReviewDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final ReviewMapper reviewMapper;
+    private final EventDao eventDao;
     private static final boolean LIKE = true;
     private static final boolean DISLIKE = false;
 
@@ -30,7 +32,7 @@ public class ReviewDao {
         jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getIsPositive(), review.getReviewId());
         jdbcTemplate.update(sqlQueryInsertFilmsReviewsTable, review.getFilmId(), review.getReviewId());
         jdbcTemplate.update(sqlQueryInsertUsersReviewsTable, review.getUserId(), review.getReviewId());
-        EventDao.eventAdd(review.getReviewId(), "REVIEW", "ADD", review.getUserId());
+        eventDao.eventAdd(review.getReviewId(), "REVIEW", "ADD", review.getUserId());
         return getReviewById(review.getReviewId());
     }
 
@@ -41,7 +43,7 @@ public class ReviewDao {
         jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getContent(), review.getIsPositive(),
                 review.getReviewId());
         Review reviewById = getReviewById(review.getReviewId());
-        EventDao.eventAdd(review.getReviewId(), "REVIEW", "UPDATE", reviewById.getUserId());
+        eventDao.eventAdd(review.getReviewId(), "REVIEW", "UPDATE", reviewById.getUserId());
         return reviewById;
     }
 
@@ -64,7 +66,7 @@ public class ReviewDao {
         jdbcTemplate.update(sqlQueryOnDeleteReviewInUsersReviewsTable, reviewId);
         jdbcTemplate.update(sqlQueryOnDeleteReviewInLikesReviewsTable, reviewId);
         jdbcTemplate.update(sqlQueryOnDeleteReviewInReviewsTable, reviewId);
-        EventDao.eventAdd(review.getReviewId(), "REVIEW", "REMOVE", review.getUserId());
+        eventDao.eventAdd(review.getReviewId(), "REVIEW", "REMOVE", review.getUserId());
     }
 
     public List<Review> getAllReviews(int count) {

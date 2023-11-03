@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
@@ -19,18 +20,13 @@ import java.util.List;
 @Component("dbStorage")
 @Primary
 @Slf4j
+@AllArgsConstructor
 public class UserDbStorage implements UserStorage {
+
     private final JdbcTemplate jdbcTemplate;
     private final UserMapper userMapper;
     private final FeedMapper feedMapper;
-
-    public UserDbStorage(JdbcTemplate jdbcTemplate,
-                         UserMapper userMapper,
-                         FeedMapper feedMapper) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.userMapper = userMapper;
-        this.feedMapper = feedMapper;
-    }
+    private final EventDao eventDao;
 
     @Override
     public User createUser(User user) {
@@ -120,14 +116,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public boolean addFriend(int userId1, int userId2) {
-        EventDao.eventAdd(userId2, "FRIEND", "ADD", userId1);
+        eventDao.eventAdd(userId2, "FRIEND", "ADD", userId1);
         String sqlQuery = "insert into friends values(?,?)";
         return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
     }
 
     @Override
     public boolean removeFriend(int userId1, int userId2) {
-        EventDao.eventAdd(userId2, "FRIEND", "REMOVE", userId1);
+        eventDao.eventAdd(userId2, "FRIEND", "REMOVE", userId1);
         String sqlQuery = "delete from friends where following_user_id = ? AND followed_user_id = ?";
         return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
     }
@@ -139,7 +135,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<Feed> getUserFeed(Integer id) {
-        String sqlQuery = "SELECT * FROM FEEDS f WHERE USER_ID = " + id + ";";
-        return jdbcTemplate.query(sqlQuery, feedMapper);
+        String sqlQuery = "SELECT * FROM FEEDS f WHERE USER_ID = ?;";
+        return jdbcTemplate.query(sqlQuery, feedMapper, id);
     }
 }
