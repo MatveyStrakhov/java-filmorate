@@ -78,21 +78,25 @@ public class ReviewDao {
     }
 
     public void likeReview(Integer reviewId, Integer userId) {
+        upUseful(reviewId);
         String sql = "MERGE INTO likes_reviews (user_id, review_id, is_like) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, userId, reviewId, LIKE);
     }
 
     public void unlikeReview(Integer reviewId, Integer userId) {
+        downUseful(reviewId);
         String sql = "DELETE FROM likes_reviews WHERE user_id = ? AND review_id = ? AND is_like = ?";
         jdbcTemplate.update(sql, userId, reviewId, LIKE);
     }
 
     public void dislikeReview(Integer reviewId, Integer userId) {
+        downUseful(reviewId);
         String sql = "MERGE INTO likes_reviews (user_id, review_id, is_like) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, userId, reviewId, DISLIKE);
     }
 
     public void unDislikeReview(Integer reviewId, Integer userId) {
+        upUseful(reviewId);
         String sql = "DELETE FROM likes_reviews WHERE user_id = ? AND review_id = ? AND is_like = ?";
         jdbcTemplate.update(sql, userId, reviewId, DISLIKE);
     }
