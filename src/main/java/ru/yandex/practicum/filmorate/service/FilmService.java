@@ -98,38 +98,22 @@ public class FilmService implements IFilmService {
 
     @Override
     public List<Film> findPopularFilmsFromLikes(Integer count) {
-        if (filmStorage.findPopularFilmsFromLikes(count) != null) {
-            return filmStorage.findPopularFilmsFromLikes(count);
-        } else {
-            return null;
-        }
+        return filmStorage.findPopularFilmsFromLikes(count);
     }
 
     @Override
     public List<Film> findPopularFilmsFromYear(Integer count, Integer year) {
-        if (filmStorage.findPopularFilmsFromYear(count, year) != null) {
-            return filmStorage.findPopularFilmsFromYear(count, year);
-        } else {
-            return null;
-        }
+        return filmStorage.findPopularFilmsFromYear(count, year);
     }
 
     @Override
     public List<Film> findPopularFilmsFromGenre(Integer count, Long genreId) {
-        if (filmStorage.findPopularFilmsFromGenre(count, genreId) != null) {
-            return filmStorage.findPopularFilmsFromGenre(count, genreId);
-        } else {
-            return null;
-        }
+        return filmStorage.findPopularFilmsFromGenre(count, genreId);
     }
 
     @Override
     public List<Film> findPopularFilmsFromYearAndGenre(Integer count, Long genreId, Integer year) {
-        if (filmStorage.findPopularFilmsFromYearAndGenre(count, genreId, year) != null) {
-            return filmStorage.findPopularFilmsFromYearAndGenre(count, genreId, year);
-        } else {
-            return null;
-        }
+        return filmStorage.findPopularFilmsFromYearAndGenre(count, genreId, year);
     }
 
     @Override
