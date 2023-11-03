@@ -84,9 +84,9 @@ public class UserService {
         return userStorage.getFriendsList(id);
     }
 
-    public User deleteUser(int id) {
+    public void deleteUser(int id) {
         if (isValidUser(id)) {
-            return userStorage.deleteUser(id);
+            userStorage.deleteUser(id);
         } else {
             throw new IdNotFoundException("User with this id does not exist!");
         }
