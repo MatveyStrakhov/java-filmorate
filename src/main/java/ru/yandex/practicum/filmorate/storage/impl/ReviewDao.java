@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewMapper;
+import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +15,9 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class ReviewDao {
-
+public class ReviewDao implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
     private final ReviewMapper reviewMapper;
-    private final EventDao eventDao;
     private static final boolean LIKE = true;
     private static final boolean DISLIKE = false;
 
@@ -32,7 +31,7 @@ public class ReviewDao {
         jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getIsPositive(), review.getReviewId());
         jdbcTemplate.update(sqlQueryInsertFilmsReviewsTable, review.getFilmId(), review.getReviewId());
         jdbcTemplate.update(sqlQueryInsertUsersReviewsTable, review.getUserId(), review.getReviewId());
-        eventDao.eventAdd(review.getReviewId(), "REVIEW", "ADD", review.getUserId());
+        EventDao.eventAdd(review.getReviewId(), "REVIEW", "ADD", review.getUserId());
         return getReviewById(review.getReviewId());
     }
 
@@ -43,7 +42,7 @@ public class ReviewDao {
         jdbcTemplate.update(sqlQueryUpdateReviewsTable, review.getContent(), review.getIsPositive(),
                 review.getReviewId());
         Review reviewById = getReviewById(review.getReviewId());
-        eventDao.eventAdd(review.getReviewId(), "REVIEW", "UPDATE", reviewById.getUserId());
+        EventDao.eventAdd(review.getReviewId(), "REVIEW", "UPDATE", reviewById.getUserId());
         return reviewById;
     }
 
@@ -66,7 +65,7 @@ public class ReviewDao {
         jdbcTemplate.update(sqlQueryOnDeleteReviewInUsersReviewsTable, reviewId);
         jdbcTemplate.update(sqlQueryOnDeleteReviewInLikesReviewsTable, reviewId);
         jdbcTemplate.update(sqlQueryOnDeleteReviewInReviewsTable, reviewId);
-        eventDao.eventAdd(review.getReviewId(), "REVIEW", "REMOVE", review.getUserId());
+        EventDao.eventAdd(review.getReviewId(), "REVIEW", "REMOVE", review.getUserId());
     }
 
     public List<Review> getAllReviews(int count) {
@@ -132,5 +131,4 @@ public class ReviewDao {
         log.debug("downUseful update started");
         jdbcTemplate.update(sql, reviewId);
     }
-
 }
