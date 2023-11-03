@@ -26,6 +26,7 @@ public class RecommendationsDao {
     private final FilmStorage filmStorage;
     private final LikesMapper likesMapper;
     private final JdbcTemplate jdbcTemplate;
+    private final SlopeOne slopeOne;
 
     public List<Film> getRecommendedFilms(int userId) {
         HashMap<Integer, HashMap<Film, Double>> initialData = new HashMap<>();
@@ -48,7 +49,7 @@ public class RecommendationsDao {
                 });
                 }
             }
-        return SlopeOne.slopeOne(initialData, films, userId);
+        return slopeOne.slopeOne(initialData, films, userId);
     }
 
     private List<Like> getLikes() {
@@ -58,12 +59,12 @@ public class RecommendationsDao {
 
     private static class SlopeOne {
 
-        private static Map<Film, Map<Film, Double>> diff = new HashMap<>();
-        private static Map<Film, Map<Film, Integer>> freq = new HashMap<>();
-        private static Map<Integer, HashMap<Film, Double>> outputData = new HashMap<>();
-        private static Set<Film> films;
+        private Map<Film, Map<Film, Double>> diff = new HashMap<>();
+        private Map<Film, Map<Film, Integer>> freq = new HashMap<>();
+        private final Map<Integer, HashMap<Film, Double>> outputData = new HashMap<>();
+        private Set<Film> films;
 
-        public static List<Film> slopeOne(Map<Integer, HashMap<Film, Double>> inputData, Set<Film> inputFilms, Integer userId) {
+        public List<Film> slopeOne(Map<Integer, HashMap<Film, Double>> inputData, Set<Film> inputFilms, Integer userId) {
             films = inputFilms;
             diff = new HashMap<>();
             freq = new HashMap<>();
@@ -73,7 +74,7 @@ public class RecommendationsDao {
             return getRecommendedFilms(inputData, predictionMatrix, userId);
         }
 
-        private static void buildDifferencesMatrix(Map<Integer, HashMap<Film, Double>> data) {
+        private void buildDifferencesMatrix(Map<Integer, HashMap<Film, Double>> data) {
             for (HashMap<Film, Double> user : data.values()) {
                 for (Entry<Film, Double> e : user.entrySet()) {
                     if (!diff.containsKey(e.getKey())) {
@@ -104,7 +105,7 @@ public class RecommendationsDao {
             }
         }
 
-        private static Map<Integer, HashMap<Film, Double>> predict(Map<Integer, HashMap<Film, Double>> data) {
+        private Map<Integer, HashMap<Film, Double>> predict(Map<Integer, HashMap<Film, Double>> data) {
             HashMap<Film, Double> uPred = new HashMap<>();
             HashMap<Film, Integer> uFreq = new HashMap<>();
             for (Film j : diff.keySet()) {
@@ -141,7 +142,7 @@ public class RecommendationsDao {
             return outputData;
         }
 
-        private static List<Film> getRecommendedFilms(Map<Integer, HashMap<Film, Double>> originalData, Map<Integer, HashMap<Film, Double>> predictedData, int userId) {
+        private List<Film> getRecommendedFilms(Map<Integer, HashMap<Film, Double>> originalData, Map<Integer, HashMap<Film, Double>> predictedData, int userId) {
             Map<Film, Double> listOfRated = originalData.get(userId);
             Map<Film, Double> listWithPredicted = predictedData.get(userId);
             Set<Film> recommendedFilms = new LinkedHashSet<>();
@@ -151,8 +152,9 @@ public class RecommendationsDao {
                 }
             }
             log.info("recommendation: " + recommendedFilms);
-            List<Film> output = recommendedFilms.stream().sorted(Comparator.comparing(Film::getId, Integer::compareTo)).collect(Collectors.toList());
-            return output;
+            return recommendedFilms.stream()
+                    .sorted(Comparator.comparing(Film::getId, Integer::compareTo))
+                    .collect(Collectors.toList());
         }
     }
 }
