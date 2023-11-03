@@ -12,7 +12,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FilmService {
+
     private final FilmStorage filmStorage;
+    private final DirectorService directorService;
 
     public void likeFilm(int filmId, int userId) {
         filmStorage.likeFilm(filmId, userId);
@@ -32,13 +34,16 @@ public class FilmService {
     }
 
     public List<Film> getFilmsByDirector(int directorId, String sortBy) {
-        return filmStorage.getFilmsByDirector(directorId, sortBy);
+        if (directorService.isValidDirector(directorId)) {
+            return filmStorage.getFilmsByDirector(directorId, sortBy);
+        } else {
+            throw new IdNotFoundException("Director id not found!");
+        }
     }
 
     public Film createFilm(Film film) {
         return filmStorage.createFilm(film);
     }
-
 
     public Collection<Film> returnAllFilms() {
         return filmStorage.returnAllFilms();
@@ -52,9 +57,7 @@ public class FilmService {
         }
     }
 
-
     public Film getFilmById(int filmId) {
         return filmStorage.getFilmById(filmId);
     }
-
 }

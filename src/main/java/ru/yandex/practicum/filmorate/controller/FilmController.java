@@ -17,10 +17,9 @@ import java.util.Collection;
 @RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
+
     private final FilmService filmService;
     private final UserService userService;
-    private final DirectorService directorService;
-
 
     @PostMapping()
     public Film addFilm(@Valid @RequestBody Film film) {
@@ -72,12 +71,6 @@ public class FilmController {
 
     @GetMapping("/director/{directorId}")
     public Collection<Film> getFilmsByDirector(@PathVariable int directorId, @RequestParam String sortBy) {
-        if (directorService.isValidDirector(directorId)) {
-            return filmService.getFilmsByDirector(directorId, sortBy);
-        } else {
-            throw new IdNotFoundException("Director id not found!");
-        }
+        return filmService.getFilmsByDirector(directorId, sortBy);
     }
-
-
 }
