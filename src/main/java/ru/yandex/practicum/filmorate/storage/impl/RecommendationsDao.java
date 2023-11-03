@@ -18,14 +18,12 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-
 public class RecommendationsDao {
 
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final LikesMapper likesMapper;
     private final JdbcTemplate jdbcTemplate;
-    private final SlopeOne slopeOne;
 
     public List<Film> getRecommendedFilms(int userId) {
         HashMap<Integer, HashMap<Film, Double>> initialData = new HashMap<>();
@@ -48,6 +46,7 @@ public class RecommendationsDao {
                 });
                 }
             }
+        SlopeOne slopeOne = new SlopeOne();
         return slopeOne.slopeOne(initialData, films, userId);
     }
 
