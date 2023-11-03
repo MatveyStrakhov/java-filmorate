@@ -11,9 +11,8 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.LikesMapper;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Map.Entry;
-
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 @Component

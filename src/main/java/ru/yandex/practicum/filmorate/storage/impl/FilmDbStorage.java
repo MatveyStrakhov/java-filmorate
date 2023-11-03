@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
@@ -20,15 +21,12 @@ import java.util.stream.Collectors;
 @Component
 @Primary
 @Slf4j
+@AllArgsConstructor
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final FilmsExtractor filmsExtractor;
-
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmsExtractor filmsExtractor) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.filmsExtractor = filmsExtractor;
-    }
+    private final EventDao eventDao;
 
     @Override
     public Film createFilm(Film film) {
@@ -134,14 +132,14 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void likeFilm(Integer filmId, Integer userId) {
-        EventDao.eventAdd(filmId, "LIKE", "ADD", userId);
+        eventDao.eventAdd(filmId, "LIKE", "ADD", userId);
         String sql = "MERGE INTO likes(user_id, film_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, userId, filmId);
     }
 
     @Override
     public void unlikeFilm(Integer filmId, Integer userId) {
-        EventDao.eventAdd(filmId, "LIKE", "REMOVE", userId);
+        eventDao.eventAdd(filmId, "LIKE", "REMOVE", userId);
         String sql = "DELETE FROM likes WHERE user_id = ? AND film_id = ?";
         jdbcTemplate.update(sql, userId, filmId);
     }
