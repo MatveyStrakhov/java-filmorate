@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 
 public class RecommendationsDao {
+
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final LikesMapper likesMapper;
@@ -44,15 +45,15 @@ public class RecommendationsDao {
             HashMap<Film, Double> filmMarkMap = new HashMap<>();
             initialData.put(id, filmMarkMap);
             for (Film film : films) {
-                for (Like like : likes) {
-                    if ((like.getFilmId() == film.getId()) && (id == like.getUserId())) {
+                likes.forEach(like -> {
+                    if ((like.getFilmId() == film.getId()) && (Objects.equals(id, like.getUserId()))) {
                         Double mark = 10.0;
                         filmMarkMap.put(film, mark);
                         initialData.put(id, filmMarkMap);
                     }
+                });
                 }
             }
-        }
         return SlopeOne.slopeOne(initialData, films, userId);
     }
 
