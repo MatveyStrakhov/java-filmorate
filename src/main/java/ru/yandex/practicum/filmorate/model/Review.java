@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,31 +12,18 @@ import java.util.Map;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class Review {
     private int reviewId;
     @Size(max = 255, message = "content is too long")
     @NotNull(message = "content mustn't be null")
     private String content;
-    @NotNull(message = "positive mustn't be null")
-    private boolean isPositive;
+    private Boolean isPositive;
     @NotNull(message = "userId mustn't be null")
-    private int userId;
+    private Integer userId;
     @NotNull(message = "filmId mustn't be null")
-    private int filmId;
+    private Integer filmId;
     private int useful;
-
-    public Review(int reviewId,
-                   @JsonProperty(value = "content", required = true) String content,
-                   @JsonProperty(value = "isPositive", required = true) boolean isPositive,
-                   @JsonProperty(value = "userId", required = true) int userId,
-                   @JsonProperty(value = "filmId", required = true) int filmId, int useful) {
-        this.reviewId = reviewId;
-        this.content = content;
-        this.isPositive = isPositive;
-        this.userId = userId;
-        this.filmId = filmId;
-        this.useful = useful;
-    }
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
