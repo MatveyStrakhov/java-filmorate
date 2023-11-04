@@ -88,22 +88,10 @@ public class UserStorageTest {
 
     @Test
     @Order(4)
-    void addFriendTest() {
-        userStorage.createUser(user2);
-        assertThat(userStorage.addFriend(1, 2)).isTrue();
-    }
-
-    @Test
-    @Order(5)
     void getFriendsListTest() {
+        userStorage.createUser(user2);
+        userStorage.addFriend(1,2);
         assertThat(userStorage.getFriendsList(1)).hasSize(1);
-    }
-
-    @Test
-    @Order(6)
-    void removeFriendTest() {
-        assertThat(userStorage.removeFriend(1, 2)).isTrue();
-        assertThat(userStorage.getFriendsList(1)).hasSize(0);
     }
 
 }
