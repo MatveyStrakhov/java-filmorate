@@ -85,9 +85,12 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserById(int userId) {
-        return userStorage.getUserById(userId);
+        if (isValidUser(userId)) {
+            return userStorage.getUserById(userId);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
-
 
     @Override
     public Collection<User> getFriendsList(int id) {
@@ -105,7 +108,11 @@ public class UserService implements IUserService {
 
     @Override
     public List<Feed> getUserFeed(Integer id) {
-        return userStorage.getUserFeed(id);
+        if (isValidUser(id)) {
+            return userStorage.getUserFeed(id);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
 
     @Override

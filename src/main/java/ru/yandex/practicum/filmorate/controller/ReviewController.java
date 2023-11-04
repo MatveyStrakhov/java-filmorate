@@ -19,56 +19,56 @@ public class ReviewController {
 
     @PostMapping()
     public Review addReview(@Valid @RequestBody Review review) {
-        log.info("create review");
+        log.info("Получен запрос POST /reviews — добавление отзыва");
         return reviewService.createReview(review);
     }
 
     @PutMapping()
     public Review updateReview(@RequestBody Review review) {
-        log.info("update review");
+        log.info("Получен запрос PUT /reviews — обновление отзыва");
         return reviewService.updateReview(review);
     }
 
     @DeleteMapping("/{id}")
     public void deleteReview(@PathVariable int id) {
-        log.info("delete review");
+        log.info("Получен запрос DELETE /reviews/{id} — удаление отзыва по id");
         reviewService.deleteReviewById(id);
     }
 
     @GetMapping("/{id}")
     public Review getReview(@PathVariable Integer id) {
-        log.info("get review by id");
+        log.info("Получен запрос GET /reviews/{id} — получение отзыва по id");
         return reviewService.getReviewById(id);
     }
 
     @GetMapping()
     public Collection<Review> getReviewsFilms(@RequestParam(defaultValue = "-1") int filmId,
                                               @RequestParam(defaultValue = "10") int count) {
-        log.info("get reviews by filmid: " + filmId + ". with count: " + count);
+        log.info("Получен запрос GET /reviews/{id} — получение отзывов по фильму");
         return reviewService.getReviewByFilmIdAndByCount(filmId, count);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void likeReview(@PathVariable int id, @PathVariable int userId) {
-        log.info("like review with id: " + id + " with user's id: " + userId);
+        log.info("Получен запрос PUT /reviews/{id}/like/{userId} — поставить лайк отзыву");
         reviewService.likeReview(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void unlikeReview(@PathVariable int id, @PathVariable int userId) {
-        log.info("unlike review with id: " + id + " with user's id: " + userId);
+        log.info("Получен запрос DELETE /reviews/{id}/like/{userId} — убрать лайк у отзыва");
         reviewService.unlikeReview(id, userId);
     }
 
     @PutMapping("/{id}/dislike/{userId}")
     public void dislikeReview(@PathVariable int id, @PathVariable int userId) {
-        log.info("dislike review with id: " + id + " with user's id: " + userId);
+        log.info("Получен запрос PUT /reviews/{id}/like/{userId} — поставить дизлайк отзыву");
         reviewService.dislikeReview(id, userId);
     }
 
     @DeleteMapping("/{id}/dislike/{userId}")
     public void unDislikeReview(@PathVariable int id, @PathVariable int userId) {
-        log.info("unDislike review with id: " + id + " with user's id: " + userId);
+        log.info("Получен запрос DELETE /reviews/{id}/like/{userId} — убрать дизлайк у отзыва");
         reviewService.unDislikeReview(id, userId);
     }
 }
