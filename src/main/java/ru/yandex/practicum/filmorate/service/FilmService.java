@@ -21,10 +21,15 @@ public class FilmService implements IFilmService {
 
     private final FilmStorage filmStorage;
     private final DirectorService directorService;
+    private final UserService userService;
 
     @Override
     public void likeFilm(int filmId, int userId) {
-        filmStorage.likeFilm(filmId, userId);
+        if (isValidFilm(filmId) && userService.isValidUser(userId))
+            filmStorage.likeFilm(filmId, userId);
+        else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
 
     @Override
@@ -34,7 +39,11 @@ public class FilmService implements IFilmService {
 
     @Override
     public void unlikeFilm(int filmId, int userId) {
-        filmStorage.unlikeFilm(filmId, userId);
+        if (isValidFilm(filmId) && userService.isValidUser(userId))
+            filmStorage.unlikeFilm(filmId, userId);
+        else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
 
     @Override
