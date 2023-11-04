@@ -53,9 +53,9 @@ public class UserDbStorage implements UserStorage {
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        String sqlQuery = "update users set " +
+        String sqlQuery = "UPDATE users SET " +
                 "email = ?, login = ?, name = ?, birthday = ? " +
-                "where id = ?";
+                "WHERE id = ?";
         if (jdbcTemplate.update(sqlQuery,
                 user.getEmail(),
                 user.getLogin(),

@@ -4,13 +4,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.storage.EventStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
 @Component
-public class EventDao {
+public class EventDao implements EventStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -18,6 +19,7 @@ public class EventDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public void eventAdd(int entityId, String eventType, String operation, int userId) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sqlEvent = "INSERT INTO feeds (entityid, eventtype, operation, timestamp, user_id) VALUES(?,?,?,?,?)";

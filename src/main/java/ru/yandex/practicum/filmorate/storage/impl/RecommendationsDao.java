@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-
 public class RecommendationsDao implements RecommendationsStorage {
+
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final LikesMapper likesMapper;
@@ -37,15 +37,15 @@ public class RecommendationsDao implements RecommendationsStorage {
             HashMap<Film, Double> filmMarkMap = new HashMap<>();
             initialData.put(id, filmMarkMap);
             for (Film film : films) {
-                for (Like like : likes) {
-                    if ((like.getFilmId() == film.getId()) && (id == like.getUserId())) {
+                likes.forEach(like -> {
+                    if ((like.getFilmId() == film.getId()) && (Objects.equals(id, like.getUserId()))) {
                         Double mark = 10.0;
                         filmMarkMap.put(film, mark);
                         initialData.put(id, filmMarkMap);
                     }
+                });
                 }
             }
-        }
         SlopeOne slopeOne = new SlopeOne();
         return slopeOne.executeSlopeOneAlg(initialData, films, userId);
     }
@@ -164,8 +164,9 @@ public class RecommendationsDao implements RecommendationsStorage {
                 }
             }
             log.info("recommendation: " + recommendedFilms);
-            List<Film> output = recommendedFilms.stream().sorted(Comparator.comparing(Film::getId, Integer::compareTo)).collect(Collectors.toList());
-            return output;
+            return recommendedFilms.stream()
+                    .sorted(Comparator.comparing(Film::getId, Integer::compareTo))
+                    .collect(Collectors.toList());
         }
     }
 }
