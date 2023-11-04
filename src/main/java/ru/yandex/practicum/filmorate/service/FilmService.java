@@ -18,8 +18,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmService implements IFilmService {
-    private final FilmStorage filmStorage;
 
+    private final FilmStorage filmStorage;
+    private final DirectorService directorService;
 
     @Override
     public void likeFilm(int filmId, int userId) {
@@ -38,7 +39,11 @@ public class FilmService implements IFilmService {
 
     @Override
     public List<Film> getFilmsByDirector(int directorId, String sortBy) {
-        return filmStorage.getFilmsByDirector(directorId, sortBy);
+        if (directorService.isValidDirector(directorId)) {
+            return filmStorage.getFilmsByDirector(directorId, sortBy);
+        } else {
+            throw new IdNotFoundException("Director id not found!");
+        }
     }
 
     @Override
@@ -61,8 +66,12 @@ public class FilmService implements IFilmService {
     }
 
     @Override
-    public Film getFilmById(int filmId) {
-        return filmStorage.getFilmById(filmId);
+    public Film getFilmById(int id) {
+        if (!isValidFilm(id)) {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        } else {
+            return filmStorage.getFilmById(id);
+        }
     }
 
     @Override
@@ -89,53 +98,22 @@ public class FilmService implements IFilmService {
 
     @Override
     public List<Film> findPopularFilmsFromLikes(Integer count) {
-        if (count <= 0) {
-            throw new IdNotFoundException("count");
-        }
-
-        if (filmStorage.findPopularFilmsFromLikes(count) != null) {
-            return filmStorage.findPopularFilmsFromLikes(count);
-        } else {
-            return null;
-        }
+        return filmStorage.findPopularFilmsFromLikes(count);
     }
 
     @Override
     public List<Film> findPopularFilmsFromYear(Integer count, Integer year) {
-        if (count <= 0) {
-            throw new IdNotFoundException("count");
-        }
-
-        if (filmStorage.findPopularFilmsFromYear(count, year) != null) {
-            return filmStorage.findPopularFilmsFromYear(count, year);
-        } else {
-            return null;
-        }
+        return filmStorage.findPopularFilmsFromYear(count, year);
     }
 
     @Override
     public List<Film> findPopularFilmsFromGenre(Integer count, Long genreId) {
-        if (count <= 0) {
-            throw new IdNotFoundException("count");
-
-        }
-        if (filmStorage.findPopularFilmsFromGenre(count, genreId) != null) {
-            return filmStorage.findPopularFilmsFromGenre(count, genreId);
-        } else {
-            return null;
-        }
+        return filmStorage.findPopularFilmsFromGenre(count, genreId);
     }
 
     @Override
     public List<Film> findPopularFilmsFromYearAndGenre(Integer count, Long genreId, Integer year) {
-        if (count <= 0) {
-            throw new IdNotFoundException("count");
-        }
-        if (filmStorage.findPopularFilmsFromYearAndGenre(count, genreId, year) != null) {
-            return filmStorage.findPopularFilmsFromYearAndGenre(count, genreId, year);
-        } else {
-            return null;
-        }
+        return filmStorage.findPopularFilmsFromYearAndGenre(count, genreId, year);
     }
 
     @Override
