@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-
 public class RecommendationsDao implements RecommendationsStorage {
+
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final LikesMapper likesMapper;
@@ -68,7 +68,6 @@ public class RecommendationsDao implements RecommendationsStorage {
             films = inputFilms;
             diff = new HashMap<>();
             freq = new HashMap<>();
-
             buildDifferencesMatrix(inputData);
             Map<Integer, HashMap<Film, Double>> predictionMatrix = predict(inputData);
             return getRecommendedFilms(inputData, predictionMatrix, userId);

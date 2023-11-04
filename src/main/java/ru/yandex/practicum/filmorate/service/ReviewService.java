@@ -41,7 +41,6 @@ public class ReviewService implements IReviewService {
         if (review.getUserId() < 0 || review.getFilmId() < 0) {
             throw new IdNotFoundException("This ID doesn't exist!");
         }
-
         return reviewDao.createReview(review);
     }
 
