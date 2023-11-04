@@ -24,24 +24,24 @@ public class UserService implements IUserService {
     private final RecommendationsDao recommendationsDao;
 
     @Override
-    public boolean addFriend(int userId1, int userId2) {
+    public void addFriend(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("User with this id does not exist!");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("You cannot add yourself to friends!");
         } else {
-            return userStorage.addFriend(userId1, userId2);
+            userStorage.addFriend(userId1, userId2);
         }
     }
 
     @Override
-    public boolean removeFriend(int userId1, int userId2) {
+    public void removeFriend(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("User with this id does not exist!");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("You cannot add or remove yourself from friends!");
         } else {
-            return userStorage.removeFriend(userId1, userId2);
+            userStorage.removeFriend(userId1, userId2);
         }
     }
 

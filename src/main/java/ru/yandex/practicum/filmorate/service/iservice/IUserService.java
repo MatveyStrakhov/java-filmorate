@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface IUserService {
 
-    boolean addFriend(int userId1, int userId2);
+    void addFriend(int userId1, int userId2);
 
-    boolean removeFriend(int userId1, int userId2);
+    void removeFriend(int userId1, int userId2);
 
     List<User> returnCommonFriends(int userId1, int userId2);
 
