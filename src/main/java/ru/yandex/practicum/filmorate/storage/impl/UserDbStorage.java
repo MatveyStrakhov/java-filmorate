@@ -114,17 +114,17 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public boolean addFriend(int userId1, int userId2) {
+    public void addFriend(int userId1, int userId2) {
         eventDao.eventAdd(userId2, "FRIEND", "ADD", userId1);
         String sqlQuery = "INSERT INTO friends VALUES(?,?)";
-        return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
+        jdbcTemplate.update(sqlQuery, userId1, userId2);
     }
 
     @Override
-    public boolean removeFriend(int userId1, int userId2) {
+    public void removeFriend(int userId1, int userId2) {
         eventDao.eventAdd(userId2, "FRIEND", "REMOVE", userId1);
         String sqlQuery = "DELETE FROM friends WHERE following_user_id = ? AND followed_user_id = ?";
-        return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
+        jdbcTemplate.update(sqlQuery, userId1, userId2);
     }
 
     @Override
