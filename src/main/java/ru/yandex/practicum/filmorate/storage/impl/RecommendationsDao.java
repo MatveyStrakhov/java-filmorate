@@ -44,8 +44,8 @@ public class RecommendationsDao implements RecommendationsStorage {
                         initialData.put(id, filmMarkMap);
                     }
                 });
-                }
             }
+        }
         SlopeOne slopeOne = new SlopeOne();
         return slopeOne.executeSlopeOneAlg(initialData, films, userId);
     }
@@ -60,7 +60,7 @@ public class RecommendationsDao implements RecommendationsStorage {
 
         private Map<Film, Map<Film, Double>> diff = new HashMap<>();
         private Map<Film, Map<Film, Integer>> freq = new HashMap<>();
-        private Map<Integer, HashMap<Film, Double>> outputData = new HashMap<>();
+        private final Map<Integer, HashMap<Film, Double>> outputData = new HashMap<>();
         private Set<Film> films;
 
         public List<Film> executeSlopeOneAlg(Map<Integer, HashMap<Film, Double>> inputData, Set<Film> inputFilms, Integer userId) {
