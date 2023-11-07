@@ -1,7 +1,8 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-![Untitled (6)](https://github.com/MatveyStrakhov/java-filmorate/assets/126389529/af3c9420-647f-473e-8dbd-b27cadbac599)
+![Filmorate-ER-diagram](https://github.com/MatveyStrakhov/java-filmorate/assets/126389529/40bb7e08-6582-42d4-ba00-edede878ae10)
+
 
 Пример запроса всех жанров фильма #1
 
@@ -12,3 +13,13 @@ SELECT fg.genre_id
 FROM films AS f
 JOIN film_genre AS fg ON f.id=fg.film_id
 WHERE f.id=1 );
+
+Были выполнены задачи:
+Функциональность "Общие фильмы"
+Функциональность "Лента событий"
+Функциональность "Фильмы по режиссёрам"
+Функциональность "Отзывы"
+Функциональность "Поиск"
+Функциональность "Удаление фильмов и пользователей"
+Функциональность "Рекомендации"
+Функциональность "Популярные фильмы"

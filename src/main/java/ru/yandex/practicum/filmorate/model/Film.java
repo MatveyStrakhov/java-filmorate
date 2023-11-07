@@ -1,12 +1,15 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.ReleaseDateConstraint;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +33,7 @@ public class Film {
     @JsonAlias("mpa")
     private Rating mpa;
     private Set<Genre> genres;
+    private Set<Director> directors;
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
@@ -41,9 +45,11 @@ public class Film {
         values.put("mpa", mpa);
         values.put("rating_id", mpa.getId());
         values.put("genres", genres);
+        values.put("director",directors);
         return values;
     }
 
+    @JsonIgnore
     public Rating getRating() {
         return mpa;
     }

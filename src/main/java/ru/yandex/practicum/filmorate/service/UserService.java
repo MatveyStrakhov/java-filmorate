@@ -5,8 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
 import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
+import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.iservice.IUserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.impl.RecommendationsDao;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,31 +19,33 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService {
+public class UserService implements IUserService {
     private final UserStorage userStorage;
+    private final RecommendationsDao recommendationsDao;
 
-    public boolean addFriend(int userId1, int userId2) {
+    @Override
+    public void addFriend(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("User with this id does not exist!");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("You cannot add yourself to friends!");
         } else {
-            return userStorage.addFriend(userId1, userId2);
+            userStorage.addFriend(userId1, userId2);
         }
     }
 
-    public boolean removeFriend(int userId1, int userId2) {
+    @Override
+    public void removeFriend(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("User with this id does not exist!");
         } else if (userId1 == userId2) {
             throw new IncorrectIdException("You cannot add or remove yourself from friends!");
         } else {
-            return userStorage.removeFriend(userId1, userId2);
-
-
+            userStorage.removeFriend(userId1, userId2);
         }
     }
 
+    @Override
     public List<User> returnCommonFriends(int userId1, int userId2) {
         if (!isValidUser(userId1) || !isValidUser(userId2)) {
             throw new IdNotFoundException("Incorrect user Id");
@@ -52,19 +58,23 @@ public class UserService {
         }
     }
 
+    @Override
     public boolean isValidUser(int id) {
         return userStorage.isValidUser(id);
     }
 
+    @Override
     public User createUser(User user) {
         return userStorage.createUser(user);
     }
 
 
+    @Override
     public Collection<User> returnAllUsers() {
         return userStorage.returnAllUsers();
     }
 
+    @Override
     public User updateUser(User user) {
         if (isValidUser(user.getId())) {
             return userStorage.updateUser(user);
@@ -73,23 +83,42 @@ public class UserService {
         }
     }
 
+    @Override
     public User getUserById(int userId) {
-        return userStorage.getUserById(userId);
+        if (isValidUser(userId)) {
+            return userStorage.getUserById(userId);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
     }
 
-
+    @Override
     public Collection<User> getFriendsList(int id) {
         return userStorage.getFriendsList(id);
     }
 
-    public boolean deleteUser(int id) {
+    @Override
+    public void deleteUser(int id) {
         if (isValidUser(id)) {
-            return userStorage.deleteUser(id);
+            userStorage.deleteUser(id);
         } else {
             throw new IdNotFoundException("User with this id does not exist!");
         }
     }
+
+    @Override
+    public List<Feed> getUserFeed(Integer id) {
+        if (isValidUser(id)) {
+            return userStorage.getUserFeed(id);
+        } else {
+            throw new IdNotFoundException("This ID doesn't exist!");
+        }
+    }
+
+    @Override
+    public List<Film> getRecommendedFilms(int userId) {
+        if (isValidUser(userId)) {
+            return recommendationsDao.getRecommendedFilms(userId);
+        } else throw new IdNotFoundException("User not found!");
+    }
 }
-
-
-

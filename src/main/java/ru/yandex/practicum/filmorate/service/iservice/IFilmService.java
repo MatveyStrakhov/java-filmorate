@@ -1,11 +1,19 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.service.iservice;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface FilmStorage {
+public interface IFilmService {
+
+    void likeFilm(int filmId, int userId);
+
+    boolean isValidFilm(int id);
+
+    void unlikeFilm(int filmId, int userId);
+
+    List<Film> getFilmsByDirector(int directorId, String sortBy);
 
     Film createFilm(Film film);
 
@@ -15,15 +23,9 @@ public interface FilmStorage {
 
     Film getFilmById(int filmId);
 
-    List<Film> getFilmsByDirector(int directorId, String sortBy);
-
-    void likeFilm(Integer filmId, Integer userId);
-
-    void unlikeFilm(Integer filmId, Integer userId);
-
-    boolean isValidFilm(int id);
-
     List<Film> searchFilms(String query, String by);
+
+    List<Film> findPopularFilms(Integer count, Long genreId, Integer year);
 
     List<Film> findPopularFilmsFromLikes(Integer count);
 
@@ -36,4 +38,6 @@ public interface FilmStorage {
     void deleteFilm(int filmId);
 
     Collection<Film> getFilmsByUser(Integer userId);
+
+    List<Film> getCommonFilms(Integer userId, Integer friendId);
 }

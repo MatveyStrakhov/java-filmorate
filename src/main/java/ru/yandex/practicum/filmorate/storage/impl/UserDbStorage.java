@@ -1,5 +1,6 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.DataAccessException;
@@ -7,7 +8,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.IdNotFoundException;
+import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FeedMapper;
+import ru.yandex.practicum.filmorate.storage.UserMapper;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,14 +20,13 @@ import java.util.List;
 @Component("dbStorage")
 @Primary
 @Slf4j
+@AllArgsConstructor
 public class UserDbStorage implements UserStorage {
+
     private final JdbcTemplate jdbcTemplate;
     private final UserMapper userMapper;
-
-    public UserDbStorage(JdbcTemplate jdbcTemplate, UserMapper userMapper, FilmsExtractor filmsExtractor) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.userMapper = userMapper;
-    }
+    private final FeedMapper feedMapper;
+    private final EventDao eventDao;
 
     @Override
     public User createUser(User user) {
@@ -32,21 +36,16 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
-
         user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).intValue());
         return user;
-
     }
 
     @Override
     public Collection<User> returnAllUsers() {
         String sql = "SELECT * FROM users";
-
         List<User> users = jdbcTemplate.query(
                 sql, userMapper);
-
         return users;
-
     }
 
     @Override
@@ -54,9 +53,9 @@ public class UserDbStorage implements UserStorage {
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        String sqlQuery = "update users set " +
+        String sqlQuery = "UPDATE users SET " +
                 "email = ?, login = ?, name = ?, birthday = ? " +
-                "where id = ?";
+                "WHERE id = ?";
         if (jdbcTemplate.update(sqlQuery,
                 user.getEmail(),
                 user.getLogin(),
@@ -69,13 +68,11 @@ public class UserDbStorage implements UserStorage {
             log.error("User update failure");
             throw new IdNotFoundException("User update failure");
         }
-
-
     }
 
     @Override
     public User getUserById(int userId) {
-        String sqlQuery = "SELECT * FROM users where id = " + userId + ";";
+        String sqlQuery = "SELECT * FROM users WHERE id = " + userId + ";";
         try {
             User user = jdbcTemplate.queryForObject(sqlQuery, userMapper);
             log.info("User found: {} {}", user.getId(), user.getLogin());
@@ -89,33 +86,55 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getFriendsList(int userId) {
-        String sqlQuery = "SELECT id, email, login, name, birthday " +
-                "FROM users AS u " +
-                "JOIN friends AS f ON  f.followed_user_id = u.id " +
-                "WHERE f.following_user_id = " + userId + ";";
-        return jdbcTemplate.query(sqlQuery, userMapper);
+        if (isValidUser(userId)) {
+            String sqlQuery = "SELECT id, email, login, name, birthday " +
+                    "FROM users AS u " +
+                    "JOIN friends AS f ON f.followed_user_id = u.id " +
+                    "WHERE f.following_user_id = ?";
+            return jdbcTemplate.query(sqlQuery, userMapper, userId);
+        } else {
+            throw new IdNotFoundException("User not found:" + userId);
+        }
     }
 
     @Override
-    public boolean deleteUser(int id) {
-        String sqlQuery = "delete from users where id = ?";
-        return jdbcTemplate.update(sqlQuery, id) > 0;
+    public void deleteUser(int id) {
+        if (isValidUser(id)) {
+            String sqlForFeeds = "DELETE FROM feeds WHERE user_id IN (SELECT id FROM users WHERE id = ?)";
+            jdbcTemplate.update(sqlForFeeds, id);
+            String sqlForLikes = "DELETE FROM likes WHERE user_id IN (SELECT id FROM users WHERE id = ?)";
+            jdbcTemplate.update(sqlForLikes, id);
+            String sqlForFriends = "DELETE FROM friends WHERE following_user_id = ? OR followed_user_id = ?";
+            jdbcTemplate.update(sqlForFriends, id, id);
+            String sqlForFilms = "DELETE FROM users WHERE id = ?";
+            jdbcTemplate.update(sqlForFilms, id);
+        } else {
+            throw new IdNotFoundException("User not found!");
+        }
     }
 
     @Override
-    public boolean addFriend(int userId1, int userId2) {
-        String sqlQuery = "insert into friends values(?,?)";
-        return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
+    public void addFriend(int userId1, int userId2) {
+        eventDao.eventAdd(userId2, "FRIEND", "ADD", userId1);
+        String sqlQuery = "INSERT INTO friends VALUES(?,?)";
+        jdbcTemplate.update(sqlQuery, userId1, userId2);
     }
 
     @Override
-    public boolean removeFriend(int userId1, int userId2) {
-        String sqlQuery = "delete from friends where following_user_id = ? AND followed_user_id = ?";
-        return jdbcTemplate.update(sqlQuery, userId1, userId2) > 0;
+    public void removeFriend(int userId1, int userId2) {
+        eventDao.eventAdd(userId2, "FRIEND", "REMOVE", userId1);
+        String sqlQuery = "DELETE FROM friends WHERE following_user_id = ? AND followed_user_id = ?";
+        jdbcTemplate.update(sqlQuery, userId1, userId2);
     }
 
     @Override
     public boolean isValidUser(int id) {
-        return jdbcTemplate.queryForRowSet("SELECT id FROM users WHERE id=?", id).next();
+        return jdbcTemplate.queryForRowSet("SELECT id FROM users WHERE id = ?", id).next();
+    }
+
+    @Override
+    public List<Feed> getUserFeed(Integer id) {
+        String sqlQuery = "SELECT * FROM feeds f WHERE user_id = ?;";
+        return jdbcTemplate.query(sqlQuery, feedMapper, id);
     }
 }

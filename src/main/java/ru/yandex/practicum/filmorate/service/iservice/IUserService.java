@@ -1,13 +1,22 @@
-package ru.yandex.practicum.filmorate.storage;
-
+package ru.yandex.practicum.filmorate.service.iservice;
 
 import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface UserStorage {
+public interface IUserService {
+
+    void addFriend(int userId1, int userId2);
+
+    void removeFriend(int userId1, int userId2);
+
+    List<User> returnCommonFriends(int userId1, int userId2);
+
+    boolean isValidUser(int id);
+
     User createUser(User user);
 
     Collection<User> returnAllUsers();
@@ -20,11 +29,7 @@ public interface UserStorage {
 
     void deleteUser(int id);
 
-    void addFriend(int userId1, int userId2);
-
-    void removeFriend(int userId1, int userId2);
-
-    boolean isValidUser(int id);
-
     List<Feed> getUserFeed(Integer id);
+
+    List<Film> getRecommendedFilms(int userId);
 }
